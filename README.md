@@ -1,39 +1,76 @@
-# ReqTrack
-## Project Description
-ReqTrack is a web-based application designed to help students monitor, organize, and manage academic requirements such as assignments, projects, quizzes, examinations, and other submission-based tasks. Students often struggle to keep track of multiple academic requirements from different subjects, leading to missed deadlines and poor time management. Existing methods such as handwritten planners or scattered notes are inefficient and prone to errors. A digital requirement tracking solution can improve organization and productivity.
+# CMSC 128 Lab — CRUD To-do List
 
-## Scope:
-- Allow user registration and login.
-- Manage academic requirements.
-- Organize requirements by subject.
-- Display deadlines and status updates.
-- Store data in a relational database.
-## Limitations
-- Internet connection is required.
-- The system is intended primarily for students.
-- Unofficial so does not utilize official university LMS
+A simple CRUD (Create, Read, Update, Delete) web application built for CMSC 128.
 
-## System Features
-### User Management
-- Registration
-- Login and Authentication
-- Profile Management
-### Requirement Management
-- Create Requirement
-- Edit Requirement
-- Delete Requirement
-- Mark Requirement as Completed
-### Subject Management
-- Add Subject
-- Edit Subject
-- Delete Subject
-### Dashboard
-- Upcoming Deadlines
-- Pending Requirements
-- Completed Requirements
-- Progress Statistics
-### Search and Filtering
-- Filter by Subject
-- Filter by Status
-- Sort by Deadline
+## Tech Stack
 
+Pivoted from PHP-MySQL to React.
+
+| Layer | Choice | Why |
+|---|---|---|
+| Backend | Node.js | Widely used, very reliable | 
+| Database | Supabase | Easy to use, lets us treat the database as an API as opposed to needing to write SQL |
+| Styling | Tailwind CSS | Utility-first classes let us style quickly without writing separate CSS files |
+| Frontend | React + Vite | Familiar with it since we used it for our CMSC 126 |
+
+## Requirements
+
+- [Node.js](https://nodejs.org/) v18 or later
+- npm (comes with Node.js)
+- A [Supabase](https://supabase.com/) account and project
+- A modern web browser
+
+## Setup & Run Locally
+
+1. **Clone the repository**
+
+   ```bash
+   git clone <repo-url>
+   cd <repo-folder>
+   ```
+
+2. **Install dependencies**
+
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**
+
+   Create a `.env` file in the project root with your Supabase project credentials:
+
+   ```
+   VITE_SUPABASE_URL=your-supabase-project-url
+   VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
+   ```
+
+   These can be found in the Supabase project under **Settings → API**.
+   
+4. **Run the development server**
+
+   ```bash
+   npm run dev
+   ```
+
+   The app will be available at `http://localhost:5173` (or the port Vite prints in the terminal).
+
+## Database Schema
+
+| Table | Columns |
+|---|---|
+| `category` | `id`, `name` |
+| `task` | `id`, `title`, `due_date`, `due_time`, `priority`, `done`, `category_id` (FK → `category.id`) |
+
+## CRUD Operations
+
+| Operation | Description |
+|---|---|
+| **Create** | Add a new task with a title, due date, due time, priority, and category |
+| **Read** | View all tasks in a table, joined with their category name |
+| **Update** | Edit an existing task's details or mark it as done |
+| **Delete** | Remove a task from the list |
+
+## Authors
+
+- Renz Frederick Bañas
+- Yuan Miguel Birondo
