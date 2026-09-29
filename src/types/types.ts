@@ -13,3 +13,5 @@ export type Task = {
   done: boolean;
 };
 
+export type SortKey = "id" | "title" | "due_date" | "due_time" | "priority" | "category";
+export type Direction = "asc" | "desc";
