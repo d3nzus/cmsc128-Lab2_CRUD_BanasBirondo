@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Form } from "react-router-dom";
 import { Task, SortKey, Direction } from "../types/types.ts";
-import { deleteTask, getTask } from "../utils/api.ts";
+import { deleteTask, getTask, ToggleTaskDone } from "../utils/api.ts";
 import { getValue, getPriorityClass } from "../utils/helper.ts";
 import AddTask from "./AddTask.tsx";
 
@@ -23,6 +23,18 @@ function TaskList() {
     }
 
     setTask((currentTasks) => currentTasks.filter((task) => task.id !== taskId));
+  }
+
+  async function handleToggleDone(task: Task) {
+    const done = !task.done;
+    const updated = await ToggleTaskDone(task.id, done);
+    if (!updated) return;
+
+    setTask((currentTasks) =>
+      currentTasks.map((currentTask) =>
+        currentTask.id === task.id ? { ...currentTask, done } : currentTask,
+      ),
+    );
   }
 
   useEffect(() => {
@@ -97,24 +109,32 @@ function TaskList() {
       <table className="border-4 text-cyan-100 mb-5">
         <thead className='border-4'>
         <tr>
+            <th className = "p-4 bg-cyan-950"> Status</th>
             <th className = "p-4 bg-cyan-950"> Title </th>
             <th className = "p-4 bg-cyan-950"> Due Date</th>
             <th className = "p-4 bg-cyan-950"> Due Time</th>
             <th className = "p-4 bg-cyan-950"> Priority</th>
             <th className = "p-4 bg-cyan-950"> Category</th>
-            <th className = "p-4 bg-cyan-950"> Done</th>
             <th className = "p-4 bg-cyan-950"> Actions</th>
         </tr>
         </thead>
         <tbody>
           {sortedTasks.map((t) => (
             <tr key={t.id} className="border-4 border-cyan-800 bg-cyan-900">
+            <td className="p-4 border border-cyan-700">
+              <button
+                className={`w-full ${t.done ? "bg-green-500 hover:bg-green-700" : "bg-gray-500 hover:bg-gray-700"} text-white font-bold py-2 px-2 rounded`}
+                type="button"
+                onClick={() => void handleToggleDone(t)}
+              >
+                {t.done ? "Done" : "Not Done"}
+              </button>
+            </td>
             <td className="p-4 border border-cyan-700">{t.title}</td>
             <td className="p-4 border border-cyan-700">{t.due_date}</td>
             <td className="p-4 border border-cyan-700">{t.due_time}</td>
             <td className='p-4 border border-cyan-700 ${getPriorityClass(t.priority)}'>{t.priority}</td>
             <td className="p-4 border border-cyan-700">{t.category?.name}</td>
-            <td className="p-4 border border-cyan-700">{t.done ? "Yes" : "No"}</td>
             <td className="p-4 border border-cyan-700">
               <Form className="flex gap-1" method="get" action="/editForm">
                 <input type="hidden" name="task_id" value={t.id} />

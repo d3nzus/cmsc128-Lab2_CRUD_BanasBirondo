@@ -101,3 +101,22 @@ export async function editTask(taskID: string | null, payload: ReturnType<typeof
     return false;
   }
 }
+
+export async function ToggleTaskDone(taskId: number, done: boolean) {
+  try {
+    const { data, error } = await supabase
+      .from("task")
+      .update({ done })
+      .eq("id", taskId)
+      .select("id")
+      .maybeSingle();
+
+    if (error) throw error;
+    if (!data) throw new Error("No matching task was updated.");
+
+    return true;
+  } catch (error) {
+    reportTaskError("update status of", error);
+    return false;
+  }
+}
