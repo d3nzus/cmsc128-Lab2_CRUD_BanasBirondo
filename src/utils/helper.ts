@@ -1,4 +1,4 @@
-import { Task, SortKey } from "../types/types.ts";
+import { Task, SortKey, NewTaskForm } from "../types/types.ts";
 
 export const priorityOptions = [
   { value: "high", label: "High", score: 2 },
@@ -6,13 +6,7 @@ export const priorityOptions = [
   { value: "low", label: "Low", score: 0 },
 ] as const;
 
-type NewTaskForm = {
-  title: string;
-  date: string;
-  time: string;
-  priority: string;
-  categoryId: string;
-};
+
 
 export function createTaskPayload({ title, date, time, priority, categoryId }: NewTaskForm) {
   const selectedPriority = priorityOptions.find((option) => option.value === priority);
@@ -21,7 +15,7 @@ export function createTaskPayload({ title, date, time, priority, categoryId }: N
     title,
     due_date: date,
     due_time: time,
-    priority: selectedPriority?.score ?? 1,
+    priority: selectedPriority?.value,
     category_id: Number(categoryId),
     done: false,
   };

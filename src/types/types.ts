@@ -1,6 +1,6 @@
 export type Category = {
-    id: number;
-    name: string;
+  id: number;
+  name: string;
 };
 
 export type Task = {
@@ -13,5 +13,22 @@ export type Task = {
   done: boolean;
 };
 
-export type SortKey = "id" | "title" | "due_date" | "due_time" | "priority" | "category";
+export type NewTaskForm = {
+  title: string;
+  date: string;
+  time: string;
+  priority: string;
+  categoryId: string;
+};
+
+export type SortKey =
+  | "id"
+  | "title"
+  | "due_date"
+  | "due_time"
+  | "priority"
+  | "category";
+
 export type Direction = "asc" | "desc";
+
+export type CategoryOption = { id: number; name: string };

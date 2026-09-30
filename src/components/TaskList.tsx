@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
+import { Form } from "react-router-dom";
 import { Task, SortKey, Direction } from "../types/types.ts";
-import { getTask } from "../utils/api.ts";
+import { deleteTask, getTask } from "../utils/api.ts";
 import { getValue, getPriorityClass } from "../utils/helper.ts";
-import PageButton from "./PageButton.tsx";
+import AddTask from "./AddTask.tsx";
 
 // Get the value we want to compare for each column
 
@@ -10,6 +11,19 @@ function TaskList() {
   const [tasks, setTask] = useState<Task[]>([]);
   const [orderBy, setOrderBy] = useState<SortKey>("id");
   const [direction, setDirection] = useState<Direction>("asc");
+
+  async function handleDelete(taskId: number) {
+    if (!window.confirm("Delete this task?")) return;
+
+    const { error } = await deleteTask(taskId);
+    if (error) {
+      console.error(error);
+      alert("Could not delete task: " + error.message);
+      return;
+    }
+
+    setTask((currentTasks) => currentTasks.filter((task) => task.id !== taskId));
+  }
 
   useEffect(() => {
     (async () => {
@@ -77,7 +91,7 @@ function TaskList() {
       </form>
 
       <div className="flex flex-row gap-3 w-full justify-start">
-        <PageButton />
+        <AddTask />
       </div>
       
       <table className="border-4 text-cyan-100 mb-5">
@@ -101,7 +115,24 @@ function TaskList() {
             <td className='p-4 border border-cyan-700 ${getPriorityClass(t.priority)}'>{t.priority}</td>
             <td className="p-4 border border-cyan-700">{t.category?.name}</td>
             <td className="p-4 border border-cyan-700">{t.done ? "Yes" : "No"}</td>
-            <td className="p-4 border border-cyan-700"></td>
+            <td className="p-4 border border-cyan-700">
+              <Form className="flex gap-1" method="get" action="/editForm">
+                <input type="hidden" name="task_id" value={t.id} />
+                <button
+                  className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-2 rounded"
+                  type="button"
+                  onClick={() => void handleDelete(t.id)}
+                >
+                  Delete
+                </button>
+                <button
+                  className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded"
+                  type="submit"
+                >
+                  Edit
+                </button>
+              </Form>
+            </td>
             </tr>
           ))}
         </tbody>

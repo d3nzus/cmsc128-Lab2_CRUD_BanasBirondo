@@ -1,11 +1,14 @@
+import { useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { addTask, getCategories } from "../utils/api";
+import { editTask, getCategories, getTaskByID } from "../utils/api";
 import { CategoryOption } from "../types/types.ts";
 import { createTaskPayload, priorityOptions } from "../utils/helper";
 
+function EditForm() {
+  const [searchParams] = useSearchParams();
+  const task_id = searchParams.get("task_id");
 
-function AddForm() {
   const navigate = useNavigate();
 
   const [title, setTitle] = useState("");
@@ -16,7 +19,6 @@ function AddForm() {
   const [categories, setCategories] = useState<CategoryOption[]>([]);
   const [saving, setSaving] = useState(false);
 
-  // Load the categories for the dropdown
   useEffect(() => {
     (async () => {
       const data = await getCategories();
@@ -24,25 +26,42 @@ function AddForm() {
     })();
   }, []);
 
+  useEffect(() => {
+    if (!task_id) return;
+
+    (async () => {
+      const task = await getTaskByID(task_id);
+      if (!task) return;
+
+      setTitle(task.title ?? "");
+      setTime((task.due_time ?? "").slice(0, 5));
+      setDate(task.due_date ?? "");
+      setPriority(task.priority ?? "mid");
+      setCategoryId(String(task.category_id ?? ""));
+    })();
+  }, [task_id]);
+
   async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault(); // stops the page from reloading
     setSaving(true);
 
-    const added = await addTask(
+    const updated = await editTask(
+      task_id,
       createTaskPayload({ title, date, time, priority, categoryId }),
-    );
+    ); //change to edit task
 
     setSaving(false);
 
-    if (!added) return;
+    if (!updated) return;
 
     navigate("/"); // go back to the task list
   }
 
   return (
     <div className="flex min-h-screen w-full flex-col items-center justify-center bg-gray-700 p-4 text-center gap-4">
+      <h1>Editing {task_id}</h1>
       <h1 className="text-white text-4xl">Lab 1 CRUD</h1>
-      <h3 className="text-white">New Task:</h3>
+      <h3 className="text-white">Edit Task:</h3>
 
       <form onSubmit={handleSubmit}>
         <table className="border-4 text-white">
@@ -129,7 +148,7 @@ function AddForm() {
             type="submit"
             disabled={saving}
           >
-            {saving ? "Adding..." : "Add Task"}
+            {saving ? "Editing..." : "Edit Task"}
           </button>
           <Link className="bg-gray-500 px-4 py-2 font-bold text-white" to="/">
             Cancel
@@ -140,4 +159,4 @@ function AddForm() {
   );
 }
 
-export default AddForm;
+export default EditForm;
