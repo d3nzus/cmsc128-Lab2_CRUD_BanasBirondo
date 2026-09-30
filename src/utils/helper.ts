@@ -1,5 +1,32 @@
 import { Task, SortKey } from "../types/types.ts";
 
+export const priorityOptions = [
+  { value: "high", label: "High", score: 2 },
+  { value: "mid", label: "Mid", score: 1 },
+  { value: "low", label: "Low", score: 0 },
+] as const;
+
+type NewTaskForm = {
+  title: string;
+  date: string;
+  time: string;
+  priority: string;
+  categoryId: string;
+};
+
+export function createTaskPayload({ title, date, time, priority, categoryId }: NewTaskForm) {
+  const selectedPriority = priorityOptions.find((option) => option.value === priority);
+
+  return {
+    title,
+    due_date: date,
+    due_time: time,
+    priority: selectedPriority?.score ?? 1,
+    category_id: Number(categoryId),
+    done: false,
+  };
+}
+
 export function getValue(task: Task, key: SortKey) {
   if (key === "category") return task.category?.name ?? "";
   return task[key];

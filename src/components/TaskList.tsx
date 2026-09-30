@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Task, SortKey, Direction } from "../types/types.ts";
 import { getTask } from "../utils/api.ts";
 import { getValue, getPriorityClass } from "../utils/helper.ts";
+import PageButton from "./PageButton.tsx";
 
 // Get the value we want to compare for each column
 
@@ -75,6 +76,10 @@ function TaskList() {
         </select>
       </form>
 
+      <div className="flex flex-row gap-3 w-full justify-start">
+        <PageButton />
+      </div>
+      
       <table className="border-4 text-cyan-100 mb-5">
         <thead className='border-4'>
         <tr>

@@ -19,3 +19,21 @@ export async function getTask() {
 
   return data;
 }
+
+export async function getCategories() {
+  const { data, error } = await supabase.from("category").select(`
+    id,
+    name
+  `);
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  return data;
+}
+
+export async function addTask() {
+
+}
