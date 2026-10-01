@@ -41,7 +41,7 @@ Pivoted from PHP-MySQL to React.
 
    ```
    VITE_SUPABASE_URL=your-supabase-project-url
-   VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
+   VITE_SUPABASE_PUBLISHABLE_KEY=your-supabase-anon-key
    ```
 
    These can be found in the Supabase project under **Settings → API**.
