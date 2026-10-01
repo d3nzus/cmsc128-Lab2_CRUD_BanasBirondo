@@ -42,7 +42,7 @@ function LoginPage() {
       return;
     }
 
-    navigate("/"); // go to the task list
+    navigate("/home"); // go to the task list
   }
  
   return (

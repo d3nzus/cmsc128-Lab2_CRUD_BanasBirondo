@@ -36,7 +36,7 @@ function AddForm() {
 
     if (!added) return;
 
-    navigate("/"); // go back to the task list
+    navigate("/home"); // go back to the task list
   }
 
   return (
@@ -130,7 +130,7 @@ function AddForm() {
           >
             {saving ? "Adding..." : "Add Task"}
           </button>
-          <Link className="bg-gray-500 px-4 py-2 font-bold text-white" to="/">
+          <Link className="bg-gray-500 px-4 py-2 font-bold text-white" to="/home">
             Cancel
           </Link>
         </div>

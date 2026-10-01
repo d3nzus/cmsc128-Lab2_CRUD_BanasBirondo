@@ -54,7 +54,7 @@ function EditForm() {
 
     if (!updated) return;
 
-    navigate("/"); // go back to the task list
+    navigate("/home"); // go back to the task list
   }
 
   return (
@@ -149,7 +149,7 @@ function EditForm() {
           >
             {saving ? "Editing..." : "Edit Task"}
           </button>
-          <Link className="bg-gray-500 px-4 py-2 font-bold text-white" to="/">
+          <Link className="bg-gray-500 px-4 py-2 font-bold text-white" to="/home">
             Cancel
           </Link>
         </div>
