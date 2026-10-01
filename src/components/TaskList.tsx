@@ -9,6 +9,8 @@ import AddTask from "./AddTask.tsx";
 // Get the value we want to compare for each column
 
 function TaskList() {
+  const contentRowStyleBase = "p-4 border border-cyan-700";
+  const headerRowStyleBase ="p-4 bg-cyan-950";
   const [tasks, setTask] = useState<Task[]>([]);
   const [orderBy, setOrderBy] = useState<SortKey>("id");
   const [direction, setDirection] = useState<Direction>("asc");
@@ -116,13 +118,13 @@ function TaskList() {
       <table className="border-4 text-cyan-100 mb-5">
         <thead className='border-4'>
         <tr>
-            <th className = "p-4 bg-cyan-950"> Status</th>
-            <th className = "p-4 bg-cyan-950"> Title </th>
-            <th className = "p-4 bg-cyan-950"> Due Date</th>
-            <th className = "p-4 bg-cyan-950"> Due Time</th>
-            <th className = "p-4 bg-cyan-950"> Priority</th>
-            <th className = "p-4 bg-cyan-950"> Category</th>
-            <th className = "p-4 bg-cyan-950"> Actions</th>
+            <th className = {`${headerRowStyleBase}`}> Status</th>
+            <th className = {`${headerRowStyleBase}`}> Title </th>
+            <th className = {`${headerRowStyleBase}`}> Due Date</th>
+            <th className = {`${headerRowStyleBase}`}> Due Time</th>
+            <th className = {`${headerRowStyleBase}`}> Priority</th>
+            <th className = {`${headerRowStyleBase}`}> Category</th>
+            <th className = {`${headerRowStyleBase}`}> Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -137,12 +139,12 @@ function TaskList() {
                 {t.done ? "Done" : "Not Done"}
               </button>
             </td>
-            <td className="p-4 border border-cyan-700">{t.title}</td>
-            <td className="p-4 border border-cyan-700">{t.due_date}</td>
-            <td className="p-4 border border-cyan-700">{t.due_time}</td>
-            <td className='p-4 border border-cyan-700 ${getPriorityClass(t.priority)}'>{t.priority}</td>
-            <td className="p-4 border border-cyan-700">{t.category?.name}</td>
-            <td className="p-4 border border-cyan-700">
+            <td className={`${contentRowStyleBase}`}>{t.title}</td>
+            <td className={`${contentRowStyleBase}`}>{t.due_date}</td>
+            <td className={`${contentRowStyleBase}`}>{t.due_time}</td>
+            <td className={`${contentRowStyleBase} ${getPriorityClass(t.priority)}`}>{t.priority}</td>
+            <td className={`${contentRowStyleBase}`}>{t.category?.name}</td>
+            <td className={`${contentRowStyleBase}`}>
               <Form className="flex gap-1" method="get" action="/editForm">
                 <input type="hidden" name="task_id" value={t.id} />
                 <button
