@@ -9,6 +9,7 @@ import AddTask from "./AddTask.tsx";
 // Get the value we want to compare for each column
 
 function TaskList() {
+  const contentRowStyleBase = "p-4 border border-cyan-700";
   const [tasks, setTask] = useState<Task[]>([]);
   const [orderBy, setOrderBy] = useState<SortKey>("id");
   const [direction, setDirection] = useState<Direction>("asc");
@@ -137,12 +138,12 @@ function TaskList() {
                 {t.done ? "Done" : "Not Done"}
               </button>
             </td>
-            <td className="p-4 border border-cyan-700">{t.title}</td>
-            <td className="p-4 border border-cyan-700">{t.due_date}</td>
-            <td className="p-4 border border-cyan-700">{t.due_time}</td>
-            <td className={getPriorityClass(t.priority)}>{t.priority}</td>
-            <td className="p-4 border border-cyan-700">{t.category?.name}</td>
-            <td className="p-4 border border-cyan-700">
+            <td className={`${contentRowStyleBase}`}>{t.title}</td>
+            <td className={`${contentRowStyleBase}`}>{t.due_date}</td>
+            <td className={`${contentRowStyleBase}`}>{t.due_time}</td>
+            <td className={`${contentRowStyleBase} ${getPriorityClass(t.priority)}`}>{t.priority}</td>
+            <td className={`${contentRowStyleBase}`}>{t.category?.name}</td>
+            <td className={`${contentRowStyleBase}`}>
               <Form className="flex gap-1" method="get" action="/editForm">
                 <input type="hidden" name="task_id" value={t.id} />
                 <button
