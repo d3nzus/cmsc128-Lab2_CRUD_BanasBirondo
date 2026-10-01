@@ -9,8 +9,11 @@ import AddTask from "./AddTask.tsx";
 // Get the value we want to compare for each column
 
 function TaskList() {
-  const contentRowStyleBase = "p-4 border border-cyan-700";
-  const headerRowStyleBase ="p-4 bg-cyan-950";
+  //palette
+  const contentRowStyleBase = "p-4";
+  const headerRowStyleBase ="p-4 bg-olive-leaf-600 text-cyan-50";
+
+
   const [tasks, setTask] = useState<Task[]>([]);
   const [orderBy, setOrderBy] = useState<SortKey>("id");
   const [direction, setDirection] = useState<Direction>("asc");
@@ -80,13 +83,13 @@ function TaskList() {
   }, [tasks, orderBy, direction]);
 
   return (
-    <div>
-      <h1 className="text-white">Task List</h1>
+    <div className="text-cyan-950">
+      <h1 className=""><strong>Task List</strong></h1>
 
-      <form className="p-4 bg-cyan-700 rounded-xl m-4">
+      <form className="p-4 bg-olive-leaf-600 rounded-xl m-4 text-cyan-50">
         <label htmlFor="order"> Order By: </label>
         <select
-          className="bg-cyan-300 border-0 rounded-md"
+          className="bg-cornsilk-300 border-0 rounded-md text-cyan-950 [&>option:hover]:bg-cornsilk-900"
           id="order"
           value={orderBy}
           onChange={(e) => setOrderBy(e.target.value as SortKey)}
@@ -101,7 +104,7 @@ function TaskList() {
 
         <label htmlFor="asc_desc"> Order: </label>
         <select
-          className="bg-cyan-300 border-0 rounded-md"
+          className="bg-cornsilk-300 border-0 rounded-md text-cyan-950"
           id="asc_desc"
           value={direction}
           onChange={(e) => setDirection(e.target.value as Direction)}
@@ -111,61 +114,63 @@ function TaskList() {
         </select>
       </form>
 
-      <div className="flex flex-row gap-3 w-full justify-start">
+      <div className="flex flex-row gap-3 w-full justify-start mb-2">
         <AddTask />
       </div>
-      
-      <table className="border-4 text-cyan-100 mb-5">
-        <thead className='border-4'>
-        <tr>
-            <th className = {`${headerRowStyleBase}`}> Status</th>
-            <th className = {`${headerRowStyleBase}`}> Title </th>
-            <th className = {`${headerRowStyleBase}`}> Due Date</th>
-            <th className = {`${headerRowStyleBase}`}> Due Time</th>
-            <th className = {`${headerRowStyleBase}`}> Priority</th>
-            <th className = {`${headerRowStyleBase}`}> Category</th>
-            <th className = {`${headerRowStyleBase}`}> Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-          {sortedTasks.map((t) => (
-            <tr key={t.id} className="border-4 border-cyan-800 bg-cyan-900">
-            <td className="p-4 border border-cyan-700">
-              <button
-                className={`w-full ${t.done ? "bg-green-500 hover:bg-green-700" : "bg-gray-500 hover:bg-gray-700"} text-white font-bold py-2 px-2 rounded`}
-                type="button"
-                onClick={() => void handleToggleDone(t)}
-              >
-                {t.done ? "Done" : "Not Done"}
-              </button>
-            </td>
-            <td className={`${contentRowStyleBase}`}>{t.title}</td>
-            <td className={`${contentRowStyleBase}`}>{t.due_date}</td>
-            <td className={`${contentRowStyleBase}`}>{t.due_time}</td>
-            <td className={`${contentRowStyleBase} ${getPriorityClass(t.priority)}`}>{t.priority}</td>
-            <td className={`${contentRowStyleBase}`}>{t.category?.name}</td>
-            <td className={`${contentRowStyleBase}`}>
-              <Form className="flex gap-1" method="get" action="/editForm">
-                <input type="hidden" name="task_id" value={t.id} />
+      <div className="overflow-hidden rounded-xl">
+        <table className= "text-cyan-950 border-collapse border-red-800">
+          <thead>
+          <tr>
+              <th className = {`${headerRowStyleBase}`}> Status</th>
+              <th className = {`${headerRowStyleBase}`}> Title </th>
+              <th className = {`${headerRowStyleBase}`}> Due Date</th>
+              <th className = {`${headerRowStyleBase}`}> Due Time</th>
+              <th className = {`${headerRowStyleBase}`}> Priority</th>
+              <th className = {`${headerRowStyleBase}`}> Category</th>
+              <th className = {`${headerRowStyleBase}`}> Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+            {sortedTasks.map((t) => (
+              <tr key={t.id} className="bg-sunlit-clay-200 inset-shadow-sm/50 inset-shadow-sunlit-clay-400">
+              <td className="p-4">
                 <button
-                  className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-2 rounded"
+                  className={`w-full ${t.done ? "bg-green-500 hover:bg-green-700" : "bg-gray-500 hover:bg-gray-700"} text-white font-bold py-2 px-2 rounded`}
                   type="button"
-                  onClick={() => void handleDelete(t.id)}
+                  onClick={() => void handleToggleDone(t)}
                 >
-                  Delete
+                  {t.done ? "Done" : "Not Done"}
                 </button>
-                <button
-                  className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded"
-                  type="submit"
-                >
-                  Edit
-                </button>
-              </Form>
-            </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+              </td>
+              <td className={`${contentRowStyleBase}`}>{t.title}</td>
+              <td className={`${contentRowStyleBase}`}>{t.due_date}</td>
+              <td className={`${contentRowStyleBase}`}>{t.due_time}</td>
+              <td className={`${contentRowStyleBase} ${getPriorityClass(t.priority)}`}>{t.priority}</td>
+              <td className={`${contentRowStyleBase}`}>{t.category?.name}</td>
+              <td className={`${contentRowStyleBase}`}>
+                <Form className="flex gap-1" method="get" action="/editForm">
+                  <input type="hidden" name="task_id" value={t.id} />
+                  <button
+                    className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-2 rounded"
+                    type="button"
+                    onClick={() => void handleDelete(t.id)}
+                  >
+                    Delete
+                  </button>
+                  <button
+                    className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded"
+                    type="submit"
+                  >
+                    Edit
+                  </button>
+                </Form>
+              </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      
     </div>
   );
 }
