@@ -1,10 +1,20 @@
-import { useEffect, useMemo, useState } from "react";
-import { Form } from "react-router-dom";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Form, useBlocker } from "react-router-dom";
 import { Task, SortKey, Direction } from "../types/types.ts";
 import { deleteTask, getTask, ToggleTaskDone } from "../utils/api.ts";
-import { getValue, getPriorityClass } from "../utils/helper.ts";
+import {
+  clearPendingDeleteIds,
+  getPriorityClass,
+  queuePendingDelete,
+  readPendingDeleteIds,
+  sortTasks,
+  undoPendingDelete,
+} from "../utils/helper.ts";
 import { getCurrentUser } from "../utils/userAuth.ts";
 import AddTask from "./AddTask.tsx";
+
+const pendingDeleteIdsAtPageLoad = readPendingDeleteIds();
+let pageLoadDeletesHandled = false;
 
 // Get the value we want to compare for each column
 
@@ -18,18 +28,19 @@ function TaskList() {
   const [tasks, setTask] = useState<Task[]>([]);
   const [orderBy, setOrderBy] = useState<SortKey>("id");
   const [direction, setDirection] = useState<Direction>("asc");
+  const [pendingDeleteIds, setPendingDeleteIds] = useState(
+    () => new Set(readPendingDeleteIds()),
+  );
+  const initialized = useRef(false);
+  const navigationCommitInProgress = useRef(false);
+  const blocker = useBlocker(pendingDeleteIds.size > 0);
 
-  async function handleDelete(taskId: number) {
-    if (!window.confirm("Delete this task?")) return;
+  function handleDelete(taskId: number) {
+    setPendingDeleteIds(queuePendingDelete(pendingDeleteIds, taskId));
+  }
 
-    const { error } = await deleteTask(taskId);
-    if (error) {
-      console.error(error);
-      alert("Could not delete task: " + error.message);
-      return;
-    }
-
-    setTask((currentTasks) => currentTasks.filter((task) => task.id !== taskId));
+  function handleUndoDelete(taskId: number) {
+    setPendingDeleteIds(undoPendingDelete(pendingDeleteIds, taskId));
   }
 
   async function handleToggleDone(task: Task) {
@@ -45,7 +56,27 @@ function TaskList() {
   }
 
   useEffect(() => {
+    if (initialized.current) return;
+    initialized.current = true;
+
     (async () => {
+      if (!pageLoadDeletesHandled) {
+        pageLoadDeletesHandled = true;
+        clearPendingDeleteIds();
+
+        const results = await Promise.all(
+          pendingDeleteIdsAtPageLoad.map((taskId) => deleteTask(taskId)),
+        );
+        const failedDelete = results.find((result) => result.error || !result.data);
+        if (failedDelete) {
+          const message = failedDelete.error?.message
+            ?? "No task was deleted. Check that the task exists and your Supabase DELETE policy allows this operation.";
+          console.error(failedDelete.error ?? message);
+          alert("Could not delete task: " + message);
+        }
+        setPendingDeleteIds(new Set());
+      }
+
       const user = await getCurrentUser();
       if (!user) {
         setTask([]);
@@ -57,30 +88,34 @@ function TaskList() {
     })();
   }, []);
 
+  useEffect(() => {
+    if (blocker.state !== "blocked" || navigationCommitInProgress.current) return;
+
+    navigationCommitInProgress.current = true;
+    const taskIds = [...pendingDeleteIds];
+    clearPendingDeleteIds();
+
+    void Promise.all(taskIds.map((taskId) => deleteTask(taskId))).then((results) => {
+      const failedDelete = results.find((result) => result.error || !result.data);
+      if (failedDelete) {
+        const message = failedDelete.error?.message
+          ?? "No task was deleted. Check that the task exists and your Supabase DELETE policy allows this operation.";
+        console.error(failedDelete.error ?? message);
+        alert("Could not delete task: " + message);
+      }
+    }).catch((error: unknown) => {
+      console.error(error);
+      alert("Could not delete pending tasks: " + String(error));
+    }).finally(() => {
+      setPendingDeleteIds(new Set());
+      navigationCommitInProgress.current = false;
+      if (blocker.state === "blocked") blocker.proceed();
+    });
+  }, [blocker, pendingDeleteIds]);
+
   // Runs again only when tasks, orderBy, or direction change
   const sortedTasks = useMemo(() => {
-    const copy = [...tasks]; // copy first, so we don't change the original array
-
-    copy.sort((a, b) => {
-      const aVal = getValue(a, orderBy);
-      const bVal = getValue(b, orderBy);
-
-      // Empty values always go to the bottom
-      if (aVal == null && bVal == null) return 0;
-      if (aVal == null) return 1;
-      if (bVal == null) return -1;
-
-      let result: number;
-      if (typeof aVal === "number" && typeof bVal === "number") {
-        result = aVal - bVal;
-      } else {
-        result = String(aVal).localeCompare(String(bVal));
-      }
-
-      return direction === "asc" ? result : -result;
-    });
-
-    return copy;
+    return sortTasks(tasks, orderBy, direction);
   }, [tasks, orderBy, direction]);
 
   return (
@@ -134,12 +169,16 @@ function TaskList() {
           </thead>
           <tbody>
             {sortedTasks.map((t) => (
-              <tr key={t.id} className="bg-sunlit-clay-200 inset-shadow-sm/30 inset-shadow-sunlit-clay-400">
+              <tr
+                key={t.id}
+                className={`${pendingDeleteIds.has(t.id) ? "bg-gray-300 text-gray-500" : "bg-sunlit-clay-200 inset-shadow-sm/30 inset-shadow-sunlit-clay-400"}`}
+              >
               <td className="p-4">
                 <button
-                  className={`w-full shadow-black-forest-800 shadow-xl/30 ${t.done ? "bg-green-500 hover:bg-green-700" : "bg-black-forest-700 hover:bg-black-forest-950"} text-white font-bold py-2 px-2 rounded`}
+                  className={`w-full shadow-black-forest-800 shadow-xl/30 ${pendingDeleteIds.has(t.id) ? "bg-gray-500" : t.done ? "bg-green-500 hover:bg-green-700" : "bg-black-forest-700 hover:bg-black-forest-950"} text-white font-bold py-2 px-2 rounded`}
                   type="button"
                   onClick={() => void handleToggleDone(t)}
+                  disabled={pendingDeleteIds.has(t.id)}
                 >
                   {t.done ? "Done" : "Not Done"}
                 </button>
@@ -150,22 +189,32 @@ function TaskList() {
               <td className={`${contentRowStyleBase} ${getPriorityClass(t.priority)} ${prioCellStyleBase}`}>{t.priority}</td>
               <td className={`${contentRowStyleBase}`}>{t.category?.name}</td>
               <td className={`${contentRowStyleBase}`}>
-                <Form className="flex gap-1" method="get" action="/editForm">
-                  <input type="hidden" name="task_id" value={t.id} />
-                  <button
-                    className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-2 rounded"
-                    type="button"
-                    onClick={() => void handleDelete(t.id)}
-                  >
-                    Delete
-                  </button>
+                {pendingDeleteIds.has(t.id) ? (
                   <button
                     className="w-full bg-black-forest-500 hover:bg-black-forest-700 text-white font-bold py-2 px-2 rounded"
-                    type="submit"
+                    type="button"
+                    onClick={() => handleUndoDelete(t.id)}
                   >
-                    Edit
+                    Undo
                   </button>
-                </Form>
+                ) : (
+                  <Form className="flex gap-1" method="get" action="/editForm">
+                    <input type="hidden" name="task_id" value={t.id} />
+                    <button
+                      className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-2 rounded"
+                      type="button"
+                      onClick={() => handleDelete(t.id)}
+                    >
+                      Delete
+                    </button>
+                    <button
+                      className="w-full bg-black-forest-500 hover:bg-black-forest-700 text-white font-bold py-2 px-2 rounded"
+                      type="submit"
+                    >
+                      Edit
+                    </button>
+                  </Form>
+                )}
               </td>
               </tr>
             ))}

@@ -80,7 +80,12 @@ export async function addTask(payload: ReturnType<typeof createTaskPayload>) {
 }
 
 export async function deleteTask(taskId: number) {
-  return await supabase.from("task").delete().eq("id", taskId);
+  return await supabase
+    .from("task")
+    .delete()
+    .eq("id", taskId)
+    .select("id")
+    .maybeSingle();
 }
 
 export async function editTask(taskID: string | null, payload: ReturnType<typeof createTaskPayload>) {
