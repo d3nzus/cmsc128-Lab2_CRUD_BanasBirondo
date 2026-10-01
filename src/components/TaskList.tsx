@@ -3,6 +3,7 @@ import { Form } from "react-router-dom";
 import { Task, SortKey, Direction } from "../types/types.ts";
 import { deleteTask, getTask, ToggleTaskDone } from "../utils/api.ts";
 import { getValue, getPriorityClass } from "../utils/helper.ts";
+import { getCurrentUser } from "../utils/userAuth.ts";
 import AddTask from "./AddTask.tsx";
 
 // Get the value we want to compare for each column
@@ -39,7 +40,13 @@ function TaskList() {
 
   useEffect(() => {
     (async () => {
-      const data = await getTask();
+      const user = await getCurrentUser();
+      if (!user) {
+        setTask([]);
+        return;
+      }
+
+      const data = await getTask(user.id);
       setTask((data ?? []) as unknown as Task[]);
     })();
   }, []);

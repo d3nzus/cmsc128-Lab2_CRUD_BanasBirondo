@@ -1,5 +1,6 @@
 import { supabase } from "../../supabase/supabase.ts";
 import type { createTaskPayload } from "./helper.ts";
+import { getCurrentUser } from "./userAuth.ts";
 
 function reportTaskError(action: string, error: unknown) {
   console.error(error);
@@ -10,7 +11,7 @@ function reportTaskError(action: string, error: unknown) {
   alert(`Could not ${action} task: ${message}`);
 }
 
-export async function getTask() {
+export async function getTask(userId: string) {
   const { data, error } = await supabase.from("task").select(`
     id,
     title,
@@ -19,7 +20,7 @@ export async function getTask() {
     priority,
     category:category_id ( name ),
     done
-  `);
+  `).eq("user_id", userId);
 
   if (error) {
     console.error(error);
@@ -64,7 +65,12 @@ export async function getTaskByID(taskId: string) {
 
 export async function addTask(payload: ReturnType<typeof createTaskPayload>) {
   try {
-    const { error } = await supabase.from("task").insert(payload);
+    const user = await getCurrentUser();
+    if (!user) throw new Error("You must be logged in to add a task.");
+
+    const { error } = await supabase
+      .from("task")
+      .insert({ ...payload, user_id: user.id });
     if (error) throw error;
     return true;
   } catch (error) {
