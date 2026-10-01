@@ -10,6 +10,7 @@ import AddTask from "./AddTask.tsx";
 
 function TaskList() {
   const contentRowStyleBase = "p-4 border border-cyan-700";
+  const headerRowStyleBase ="p-4 bg-cyan-950";
   const [tasks, setTask] = useState<Task[]>([]);
   const [orderBy, setOrderBy] = useState<SortKey>("id");
   const [direction, setDirection] = useState<Direction>("asc");
@@ -117,13 +118,13 @@ function TaskList() {
       <table className="border-4 text-cyan-100 mb-5">
         <thead className='border-4'>
         <tr>
-            <th className = "p-4 bg-cyan-950"> Status</th>
-            <th className = "p-4 bg-cyan-950"> Title </th>
-            <th className = "p-4 bg-cyan-950"> Due Date</th>
-            <th className = "p-4 bg-cyan-950"> Due Time</th>
-            <th className = "p-4 bg-cyan-950"> Priority</th>
-            <th className = "p-4 bg-cyan-950"> Category</th>
-            <th className = "p-4 bg-cyan-950"> Actions</th>
+            <th className = {`${headerRowStyleBase}`}> Status</th>
+            <th className = {`${headerRowStyleBase}`}> Title </th>
+            <th className = {`${headerRowStyleBase}`}> Due Date</th>
+            <th className = {`${headerRowStyleBase}`}> Due Time</th>
+            <th className = {`${headerRowStyleBase}`}> Priority</th>
+            <th className = {`${headerRowStyleBase}`}> Category</th>
+            <th className = {`${headerRowStyleBase}`}> Actions</th>
         </tr>
         </thead>
         <tbody>
