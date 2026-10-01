@@ -36,12 +36,11 @@ function AddForm() {
 
     if (!added) return;
 
-    navigate("/"); // go back to the task list
+    navigate("/home"); // go back to the task list
   }
 
   return (
     <div className="flex min-h-screen w-full flex-col items-center justify-center bg-gray-700 p-4 text-center gap-4">
-      <h1 className="text-white text-4xl">Lab 1 CRUD</h1>
       <h3 className="text-white">New Task:</h3>
 
       <form onSubmit={handleSubmit}>
@@ -131,7 +130,7 @@ function AddForm() {
           >
             {saving ? "Adding..." : "Add Task"}
           </button>
-          <Link className="bg-gray-500 px-4 py-2 font-bold text-white" to="/">
+          <Link className="bg-gray-500 px-4 py-2 font-bold text-white" to="/home">
             Cancel
           </Link>
         </div>
