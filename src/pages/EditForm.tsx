@@ -60,7 +60,6 @@ function EditForm() {
   return (
     <div className="flex min-h-screen w-full flex-col items-center justify-center bg-gray-700 p-4 text-center gap-4">
       <h1>Editing {task_id}</h1>
-      <h1 className="text-white text-4xl">128 Lab CRUD</h1>
       <h3 className="text-white">Edit Task:</h3>
 
       <form onSubmit={handleSubmit}>
