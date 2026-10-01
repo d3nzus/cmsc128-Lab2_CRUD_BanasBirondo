@@ -29,13 +29,13 @@ export function getValue(task: Task, key: SortKey) {
 export function getPriorityClass(priority: string) {
   switch (priority?.toLowerCase()) {
     case "high":
-      return "bg-red-600 text-white";
+      return "bg-red-600/70 text-white";
     case "mid":
     case "medium":
-      return "bg-orange-500 text-white";
+      return "bg-orange-500/70 text-white";
     case "low":
     case "lo":
-      return "bg-yellow-300 text-black";
+      return "bg-yellow-300/70 text-black";
     default:
       return "";
   }
