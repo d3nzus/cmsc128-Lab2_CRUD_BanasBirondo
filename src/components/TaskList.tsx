@@ -85,38 +85,39 @@ function TaskList() {
 
   return (
     <div className="text-cyan-950 space-y-2.5 w-auto">
-      <h1 className=""><strong>Task List</strong></h1>
+      <h1 className="text-3xl mb-5"><strong>Task List</strong></h1>
 
-      <form className="shadow-teal-600 shadow-xl/50 p-4 bg-olive-leaf-600 rounded-xl text-cyan-50">
-        <label htmlFor="order"> Order By: </label>
-        <select
-          className="bg-cornsilk-300 border-0 rounded-md text-cyan-950 [&>option:hover]:bg-cornsilk-900"
-          id="order"
-          value={orderBy}
-          onChange={(e) => setOrderBy(e.target.value as SortKey)}
-        >
-          <option value="id">ID</option>
-          <option value="title">Title</option>
-          <option value="due_date">Due Date</option>
-          <option value="due_time">Due Time</option>
-          <option value="priority">Priority</option>
-          <option value="category">Category</option>
-        </select>
+      
 
-        <label htmlFor="asc_desc"> Order: </label>
-        <select
-          className="bg-cornsilk-300 border-0 rounded-md text-cyan-950"
-          id="asc_desc"
-          value={direction}
-          onChange={(e) => setDirection(e.target.value as Direction)}
-        >
-          <option value="asc">ascending</option>
-          <option value="desc">descending</option>
-        </select>
-      </form>
-
-      <div className="flex flex-row gap-3 w-full justify-start">
+      <div className="flex flex-row gap-3 w-full justify-center">
         <AddTask />
+        <form className="shadow-teal-600 shadow-xl/50 p-4 bg-olive-leaf-600 rounded-xl text-cyan-50">
+          <label htmlFor="order"> Order By: </label>
+          <select
+            className="bg-cornsilk-300 border-0 rounded-md text-cyan-950 [&>option:hover]:bg-cornsilk-900"
+            id="order"
+            value={orderBy}
+            onChange={(e) => setOrderBy(e.target.value as SortKey)}
+          >
+            <option value="id">ID</option>
+            <option value="title">Title</option>
+            <option value="due_date">Due Date</option>
+            <option value="due_time">Due Time</option>
+            <option value="priority">Priority</option>
+            <option value="category">Category</option>
+          </select>
+
+          <label htmlFor="asc_desc"> Order: </label>
+          <select
+            className="bg-cornsilk-300 border-0 rounded-md text-cyan-950"
+            id="asc_desc"
+            value={direction}
+            onChange={(e) => setDirection(e.target.value as Direction)}
+          >
+            <option value="asc">ascending</option>
+            <option value="desc">descending</option>
+          </select>
+        </form>
       </div>
       <div className="overflow-hidden rounded-xl shadow-teal-600 shadow-xl/50">
         <table className= "text-cyan-950 border-collapse border-red-800">
