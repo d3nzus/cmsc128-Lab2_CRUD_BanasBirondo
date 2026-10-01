@@ -27,15 +27,16 @@ export function getValue(task: Task, key: SortKey) {
 }
 
 export function getPriorityClass(priority: string) {
+  const base = "p-4 border border-cyan-700 text-white";
   switch (priority?.toLowerCase()) {
     case "high":
-      return "bg-red-600 text-white";
+      return `${base} bg-red-600`;
     case "mid":
     case "medium":
-      return "bg-orange-500 text-white";
+      return `${base} bg-orange-500`;
     case "low":
     case "lo":
-      return "bg-yellow-300 text-black";
+      return "p-4 border border-cyan-700 bg-yellow-300 text-black";
     default:
       return "";
   }

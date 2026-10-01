@@ -140,7 +140,7 @@ function TaskList() {
             <td className="p-4 border border-cyan-700">{t.title}</td>
             <td className="p-4 border border-cyan-700">{t.due_date}</td>
             <td className="p-4 border border-cyan-700">{t.due_time}</td>
-            <td className='p-4 border border-cyan-700 ${getPriorityClass(t.priority)}'>{t.priority}</td>
+            <td className={getPriorityClass(t.priority)}>{t.priority}</td>
             <td className="p-4 border border-cyan-700">{t.category?.name}</td>
             <td className="p-4 border border-cyan-700">
               <Form className="flex gap-1" method="get" action="/editForm">
