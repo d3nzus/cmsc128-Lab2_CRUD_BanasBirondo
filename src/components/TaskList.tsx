@@ -12,6 +12,7 @@ function TaskList() {
   //palette
   const contentRowStyleBase = "p-4";
   const headerRowStyleBase ="p-4 bg-olive-leaf-600 text-cyan-50";
+  const prioCellStyleBase = "";
 
 
   const [tasks, setTask] = useState<Task[]>([]);
@@ -83,10 +84,10 @@ function TaskList() {
   }, [tasks, orderBy, direction]);
 
   return (
-    <div className="text-cyan-950">
+    <div className="text-cyan-950 space-y-2.5 w-auto">
       <h1 className=""><strong>Task List</strong></h1>
 
-      <form className="p-4 bg-olive-leaf-600 rounded-xl m-4 text-cyan-50">
+      <form className="shadow-teal-600 shadow-xl/50 p-4 bg-olive-leaf-600 rounded-xl text-cyan-50">
         <label htmlFor="order"> Order By: </label>
         <select
           className="bg-cornsilk-300 border-0 rounded-md text-cyan-950 [&>option:hover]:bg-cornsilk-900"
@@ -114,10 +115,10 @@ function TaskList() {
         </select>
       </form>
 
-      <div className="flex flex-row gap-3 w-full justify-start mb-2">
+      <div className="flex flex-row gap-3 w-full justify-start">
         <AddTask />
       </div>
-      <div className="overflow-hidden rounded-xl">
+      <div className="overflow-hidden rounded-xl shadow-teal-600 shadow-xl/50">
         <table className= "text-cyan-950 border-collapse border-red-800">
           <thead>
           <tr>
@@ -132,10 +133,10 @@ function TaskList() {
           </thead>
           <tbody>
             {sortedTasks.map((t) => (
-              <tr key={t.id} className="bg-sunlit-clay-200 inset-shadow-sm/50 inset-shadow-sunlit-clay-400">
+              <tr key={t.id} className="bg-sunlit-clay-200 inset-shadow-sm/30 inset-shadow-sunlit-clay-400">
               <td className="p-4">
                 <button
-                  className={`w-full ${t.done ? "bg-green-500 hover:bg-green-700" : "bg-gray-500 hover:bg-gray-700"} text-white font-bold py-2 px-2 rounded`}
+                  className={`w-full shadow-black-forest-800 shadow-xl/30 ${t.done ? "bg-green-500 hover:bg-green-700" : "bg-black-forest-700 hover:bg-black-forest-950"} text-white font-bold py-2 px-2 rounded`}
                   type="button"
                   onClick={() => void handleToggleDone(t)}
                 >
@@ -145,7 +146,7 @@ function TaskList() {
               <td className={`${contentRowStyleBase}`}>{t.title}</td>
               <td className={`${contentRowStyleBase}`}>{t.due_date}</td>
               <td className={`${contentRowStyleBase}`}>{t.due_time}</td>
-              <td className={`${contentRowStyleBase} ${getPriorityClass(t.priority)}`}>{t.priority}</td>
+              <td className={`${contentRowStyleBase} ${getPriorityClass(t.priority)} ${prioCellStyleBase}`}>{t.priority}</td>
               <td className={`${contentRowStyleBase}`}>{t.category?.name}</td>
               <td className={`${contentRowStyleBase}`}>
                 <Form className="flex gap-1" method="get" action="/editForm">
@@ -158,7 +159,7 @@ function TaskList() {
                     Delete
                   </button>
                   <button
-                    className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded"
+                    className="w-full bg-black-forest-500 hover:bg-black-forest-700 text-white font-bold py-2 px-2 rounded"
                     type="submit"
                   >
                     Edit
