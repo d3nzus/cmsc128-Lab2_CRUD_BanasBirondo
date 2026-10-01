@@ -20,8 +20,8 @@ let pageLoadDeletesHandled = false;
 
 function TaskList() {
   //palette
-  const contentRowStyleBase = "p-4";
-  const headerRowStyleBase ="p-4 bg-olive-leaf-600 text-cyan-50";
+  const contentRowStyleBase = "p-3 sm:p-4";
+  const headerRowStyleBase ="p-3 bg-olive-leaf-600 text-cyan-50 sm:p-4";
   const prioCellStyleBase = "";
 
 
@@ -119,17 +119,17 @@ function TaskList() {
   }, [tasks, orderBy, direction]);
 
   return (
-    <div className="text-cyan-950 space-y-2.5 w-auto">
-      <h1 className="text-3xl mb-5"><strong>Task List</strong></h1>
+    <div className="w-full min-w-0 space-y-4 text-cyan-950">
+      <h1 className="mb-5 text-2xl sm:text-3xl"><strong>Task List</strong></h1>
 
       
 
-      <div className="flex flex-row gap-3 w-full justify-center">
+      <div className="flex w-full flex-col justify-center gap-3 sm:flex-row sm:items-center">
         <AddTask />
-        <form className="shadow-teal-600 shadow-xl/50 p-4 bg-olive-leaf-600 rounded-xl text-cyan-50">
-          <label htmlFor="order"> Order By: </label>
+        <form className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-lg bg-olive-leaf-600 p-3 text-cyan-50 shadow-xl shadow-teal-600/50 sm:p-4">
+          <label htmlFor="order">Order By:</label>
           <select
-            className="bg-cornsilk-300 border-0 rounded-md text-cyan-950 [&>option:hover]:bg-cornsilk-900"
+            className="min-w-0 rounded-md border-0 bg-cornsilk-300 px-2 py-1.5 text-cyan-950 [&>option:hover]:bg-cornsilk-900"
             id="order"
             value={orderBy}
             onChange={(e) => setOrderBy(e.target.value as SortKey)}
@@ -142,9 +142,9 @@ function TaskList() {
             <option value="category">Category</option>
           </select>
 
-          <label htmlFor="asc_desc"> Order: </label>
+          <label htmlFor="asc_desc">Order:</label>
           <select
-            className="bg-cornsilk-300 border-0 rounded-md text-cyan-950"
+            className="min-w-0 rounded-md border-0 bg-cornsilk-300 px-2 py-1.5 text-cyan-950"
             id="asc_desc"
             value={direction}
             onChange={(e) => setDirection(e.target.value as Direction)}
@@ -154,8 +154,8 @@ function TaskList() {
           </select>
         </form>
       </div>
-      <div className="overflow-hidden rounded-xl shadow-teal-600 shadow-xl/50">
-        <table className= "text-cyan-950 border-collapse border-red-800">
+      <div className="w-full max-w-full overflow-x-auto rounded-xl shadow-xl shadow-teal-600/50">
+        <table className="w-full min-w-[900px] border-collapse text-cyan-950">
           <thead>
           <tr>
               <th className = {`${headerRowStyleBase}`}> Status</th>
