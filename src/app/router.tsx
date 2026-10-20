@@ -4,6 +4,7 @@ import App from "./App";
 import AddForm from "../pages/AddForm";
 import EditForm from "../pages/EditForm";
 import LoginPage from "../pages/LoginPage";
+import Profile from "../pages/Profile";
 import { createBrowserRouter, redirect } from "react-router-dom";
 import { getCurrentUser } from "../utils/userAuth";
 
@@ -30,6 +31,9 @@ const router = createBrowserRouter([
       },{
         path: "/login",
         element: <LoginPage/>,
+      },{
+        path: "/profile",
+        element: <Profile/>,
       },
     ]
   }
