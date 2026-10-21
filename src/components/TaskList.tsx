@@ -28,6 +28,7 @@ function TaskList() {
 
   const [tasks, setTask] = useState<Task[]>([]);
   const [taskLists, setTaskLists] = useState<UserTaskList[]>([]);
+  const [selectedTaskListId, setSelectedTaskListId] = useState("");
   const [orderBy, setOrderBy] = useState<SortKey>("id");
   const [direction, setDirection] = useState<Direction>("asc");
   const [pendingDeleteIds, setPendingDeleteIds] = useState(
@@ -91,11 +92,24 @@ function TaskList() {
         setTask([]);
         return;
       }
-
-      const data = await getTasksForLists(userTaskLists.map((list) => list.id));
-      setTask((data ?? []) as unknown as Task[]);
+      setSelectedTaskListId(String(userTaskLists[0].id));
     })();
   }, []);
+
+  useEffect(() => {
+    if (!selectedTaskListId) {
+      setTask([]);
+      return;
+    }
+
+    let cancelled = false;
+    void getTasksForLists([Number(selectedTaskListId)]).then((data) => {
+      if (!cancelled) setTask((data ?? []) as unknown as Task[]);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedTaskListId]);
 
   useEffect(() => {
     if (blocker.state !== "blocked" || navigationCommitInProgress.current) return;
@@ -130,7 +144,9 @@ function TaskList() {
   return (
     <div className="w-full min-w-0 space-y-4 text-cyan-950">
       <TaskListDropdown
-        title={taskLists.map((list) => list.name).filter(Boolean).join(", ") || "Task List"}
+        taskLists={taskLists}
+        selectedTaskListId={selectedTaskListId}
+        onSelect={setSelectedTaskListId}
       />
 
       
