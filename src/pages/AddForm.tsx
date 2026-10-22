@@ -1,164 +1,29 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { addTask, getCategories } from "../utils/api";
-import { CategoryOption } from "../types/types.ts";
-import { createTaskPayload, priorityOptions } from "../utils/helper";
-
+import { useNavigate, useSearchParams } from "react-router-dom";
+import TaskForm from "../components/TaskForm.tsx";
+import { addTask } from "../utils/api.ts";
+import { createTaskPayload } from "../utils/helper.ts";
+import type { NewTaskForm } from "../types/types.ts";
 
 function AddForm() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const taskListId = Number(searchParams.get("tasklist_id"));
+  const requestedTaskListId = Number(searchParams.get("tasklist_id"));
+  const taskListId = Number.isInteger(requestedTaskListId) && requestedTaskListId > 0
+    ? requestedTaskListId
+    : undefined;
 
-  const [title, setTitle] = useState("");
-  const [time, setTime] = useState("");
-  const [date, setDate] = useState("");
-  const [priority, setPriority] = useState("mid");
-  const [categoryId, setCategoryId] = useState("");
-  const [categories, setCategories] = useState<CategoryOption[]>([]);
-  const [saving, setSaving] = useState(false);
-
-  // Load the categories for the dropdown
-  useEffect(() => {
-    (async () => {
-      const data = await getCategories();
-      setCategories((data ?? []) as CategoryOption[]);
-    })();
-  }, []);
-
-  async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
-    e.preventDefault(); // stops the page from reloading
-    setSaving(true);
-
-    const added = await addTask(
-      createTaskPayload({ title, date, time, priority, categoryId }),
-      Number.isInteger(taskListId) && taskListId > 0 ? taskListId : undefined,
-    );
-
-    setSaving(false);
-
-    if (!added) return;
-
-    navigate(taskListId > 0 ? `/home?tasklist_id=${taskListId}` : "/home");
+  async function handleSubmit(values: NewTaskForm) {
+    await addTask(createTaskPayload(values), taskListId);
+    navigate(taskListId ? `/home?tasklist_id=${taskListId}` : "/home");
   }
 
   return (
-    <main className="flex min-h-screen w-full items-center justify-center bg-teal-100 p-4 py-10 inset-shadow-teal-200 inset-shadow-sm sm:p-8">
-      <section
-        aria-labelledby="add-task-heading"
-        className="w-full max-w-2xl rounded-lg bg-olive-leaf-700 p-5 text-white shadow-xl shadow-teal-700/30 sm:p-8"
-      >
-        <h1 id="add-task-heading" className="text-left text-2xl font-bold sm:text-3xl">
-          New Task
-        </h1>
-
-        <form className="mt-6 space-y-6" onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div className="sm:col-span-2">
-              <label className="mb-1.5 block text-left text-sm font-semibold" htmlFor="task-title">
-                Title
-              </label>
-              <input
-                className="w-full min-w-0 rounded-md border border-olive-leaf-300 bg-white px-3 py-2.5 text-cyan-950 shadow-sm outline-none focus:border-copperwood-500 focus:ring-2 focus:ring-copperwood-300"
-                id="task-title"
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                required
-              />
-            </div>
-
-            <div>
-              <label className="mb-1.5 block text-left text-sm font-semibold" htmlFor="task-date">
-                Date
-              </label>
-              <input
-                className="w-full min-w-0 rounded-md border border-olive-leaf-300 bg-white px-3 py-2.5 text-cyan-950 shadow-sm outline-none focus:border-copperwood-500 focus:ring-2 focus:ring-copperwood-300"
-                id="task-date"
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                required
-              />
-            </div>
-
-            <div>
-              <label className="mb-1.5 block text-left text-sm font-semibold" htmlFor="task-time">
-                Time
-              </label>
-              <input
-                className="w-full min-w-0 rounded-md border border-olive-leaf-300 bg-white px-3 py-2.5 text-cyan-950 shadow-sm outline-none focus:border-copperwood-500 focus:ring-2 focus:ring-copperwood-300"
-                id="task-time"
-                type="time"
-                value={time}
-                onChange={(e) => setTime(e.target.value)}
-                required
-              />
-            </div>
-
-            <fieldset className="sm:col-span-2">
-              <legend className="mb-2 text-left text-sm font-semibold">Priority</legend>
-              <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-                {priorityOptions.map((option) => (
-                  <label
-                    key={option.value}
-                    className={`flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2.5 text-sm ${priority === option.value ? "border-cornsilk-300 bg-olive-leaf-600" : "border-olive-leaf-300 bg-olive-leaf-800 hover:bg-olive-leaf-900"}`}
-                  >
-                    <input
-                      className="accent-cornsilk-300"
-                      type="radio"
-                      name="priority"
-                      value={option.value}
-                      checked={priority === option.value}
-                      onChange={(e) => setPriority(e.target.value)}
-                    />
-                    {option.label}
-                  </label>
-                ))}
-              </div>
-            </fieldset>
-
-            <div className="sm:col-span-2">
-              <label className="mb-1.5 block text-left text-sm font-semibold" htmlFor="task-category">
-                Category
-              </label>
-              <select
-                className="w-full min-w-0 rounded-md border border-olive-leaf-300 bg-white px-3 py-2.5 text-cyan-950 shadow-sm outline-none focus:border-copperwood-500 focus:ring-2 focus:ring-copperwood-300"
-                id="task-category"
-                value={categoryId}
-                onChange={(e) => setCategoryId(e.target.value)}
-                required
-              >
-                <option value="" disabled>
-                  Select a category
-                </option>
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div className="flex flex-col-reverse gap-3 border-t border-olive-leaf-500 pt-5 sm:flex-row sm:justify-end">
-            <Link
-              className="inline-flex min-h-11 items-center justify-center rounded-md bg-copperwood-600 px-5 py-2 font-bold text-white hover:bg-copperwood-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cornsilk-300"
-              to="/home"
-            >
-              Cancel
-            </Link>
-          <button
-            className="inline-flex min-h-11 items-center justify-center rounded-md bg-black-forest-500 px-5 py-2 font-bold text-white hover:bg-black-forest-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cornsilk-300 disabled:cursor-not-allowed disabled:opacity-50"
-            type="submit"
-            disabled={saving}
-          >
-            {saving ? "Adding..." : "Add Task"}
-          </button>
-          </div>
-        </form>
-      </section>
-    </main>
+    <TaskForm
+      heading="New Task"
+      submitLabel="Add Task"
+      savingLabel="Adding..."
+      onSubmit={handleSubmit}
+    />
   );
 }
 
