@@ -28,3 +28,5 @@ export type SortKey =
 export type Direction = "asc" | "desc";
 
 export type CategoryOption = { id: number; name: string };
+
+export type Profile = {id: number, username: string};

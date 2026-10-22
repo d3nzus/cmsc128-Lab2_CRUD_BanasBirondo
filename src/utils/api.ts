@@ -1,7 +1,7 @@
 import { supabase } from "../../supabase/supabase.ts";
 import type { createTaskPayload } from "./helper.ts";
 import { getCurrentUser } from "./userAuth.ts";
-import type { CategoryOption, Task } from "../types/types.ts";
+import type { CategoryOption, Profile, Task } from "../types/types.ts";
 
 export type UserTaskList = { id: number; name: string | null };
 export type EditableTask = Pick<
@@ -133,4 +133,12 @@ export async function toggleTaskDone(taskId: number, done: boolean): Promise<voi
 
   if (error) throw error;
   if (!data) throw new Error("No matching task was updated.");
+}
+
+export async function getUserName(): Promise<Profile> {
+  const user = await getCurrentUser();
+  if (!user) throw new Error("Please sign in to view profile.");
+  const {data, error} = await supabase.from("profile").select("id, username").eq("id", user.id);
+  if (error) throw error;
+  return data;
 }
