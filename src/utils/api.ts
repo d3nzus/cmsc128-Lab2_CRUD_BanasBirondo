@@ -134,11 +134,19 @@ export async function toggleTaskDone(taskId: number, done: boolean): Promise<voi
   if (error) throw error;
   if (!data) throw new Error("No matching task was updated.");
 }
-
-export async function getUserName(): Promise<Profile> {
+export async function getUserName(): Promise<string | null>{
   const user = await getCurrentUser();
-  if (!user) throw new Error("Please sign in to view profile.");
-  const {data, error} = await supabase.from("profile").select("id, username").eq("id", user.id);
-  if (error) throw error;
-  return data;
+  if (!user) throw new Error("Error! No user found!");
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("username")
+    .eq("id", user.id)
+    .single();
+
+  if (error) {
+    console.error("Error fetching username:", error.message);
+    return null;
+  }
+
+  return data.username;
 }
