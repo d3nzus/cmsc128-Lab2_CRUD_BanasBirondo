@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Form, useBlocker } from "react-router-dom";
+import { Form, useBlocker, useSearchParams } from "react-router-dom";
 import { Task, SortKey, Direction } from "../types/types.ts";
 import { deleteTask, getTaskLists, getTasksForLists, ToggleTaskDone, type UserTaskList } from "../utils/api.ts";
 import {
@@ -20,6 +20,7 @@ let pageLoadDeletesHandled = false;
 // Get the value we want to compare for each column
 
 function TaskList() {
+  const [searchParams] = useSearchParams();
   //palette
   const contentRowStyleBase = "p-3 sm:p-4";
   const headerRowStyleBase ="p-3 bg-olive-leaf-600 text-cyan-50 sm:p-4";
@@ -92,7 +93,11 @@ function TaskList() {
         setTask([]);
         return;
       }
-      setSelectedTaskListId(String(userTaskLists[0].id));
+      const requestedListId = searchParams.get("tasklist_id");
+      const selectedList = userTaskLists.find(
+        (list) => String(list.id) === requestedListId,
+      ) ?? userTaskLists[0];
+      setSelectedTaskListId(String(selectedList.id));
     })();
   }, []);
 
@@ -152,7 +157,7 @@ function TaskList() {
       
 
       <div className="flex w-full flex-col justify-center gap-3 sm:flex-row sm:items-center">
-        <AddTask />
+        <AddTask taskListId={selectedTaskListId} />
         <form className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-lg bg-olive-leaf-600 p-3 text-cyan-50 shadow-xl shadow-teal-600/50 sm:p-4">
           <label htmlFor="order">Order By:</label>
           <select
@@ -200,9 +205,9 @@ function TaskList() {
                 key={t.id}
                 className={`${pendingDeleteIds.has(t.id) ? "bg-gray-300 text-gray-500" : "bg-sunlit-clay-200 inset-shadow-sm/30 inset-shadow-sunlit-clay-400"}`}
               >
-              <td className="p-4">
+              <td className="p-4 align-middle justify-center text-center">
                 <button
-                  className={`w-full shadow-black-forest-800 shadow-xl/30 ${pendingDeleteIds.has(t.id) ? "bg-gray-500" : t.done ? "bg-green-500 hover:bg-green-700" : "bg-black-forest-700 hover:bg-black-forest-950"} text-white font-bold py-2 px-2 rounded`}
+                  className={`w-32  shadow-black-forest-800 shadow-xl/30 ${pendingDeleteIds.has(t.id) ? "bg-gray-500" : t.done ? "bg-green-500 hover:bg-green-700" : "bg-black-forest-700 hover:bg-black-forest-950"} text-white font-bold py-2 px-2 rounded`}
                   type="button"
                   onClick={() => void handleToggleDone(t)}
                   disabled={pendingDeleteIds.has(t.id)}
