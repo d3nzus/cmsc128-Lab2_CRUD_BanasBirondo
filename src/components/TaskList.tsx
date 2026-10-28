@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Form, useBlocker } from "react-router-dom";
 import { Task, SortKey, Direction } from "../types/types.ts";
-import { deleteTask, getTask, ToggleTaskDone } from "../utils/api.ts";
+import { deleteTask, getTaskLists, getTasksForLists, ToggleTaskDone, type UserTaskList } from "../utils/api.ts";
 import {
   clearPendingDeleteIds,
   getPriorityClass,
@@ -12,6 +12,7 @@ import {
 } from "../utils/helper.ts";
 import { getCurrentUser } from "../utils/userAuth.ts";
 import AddTask from "./AddTask.tsx";
+import TaskListDropdown from "./TaskListDropdown.tsx";
 
 const pendingDeleteIdsAtPageLoad = readPendingDeleteIds();
 let pageLoadDeletesHandled = false;
@@ -26,6 +27,7 @@ function TaskList() {
 
 
   const [tasks, setTask] = useState<Task[]>([]);
+  const [taskLists, setTaskLists] = useState<UserTaskList[]>([]);
   const [orderBy, setOrderBy] = useState<SortKey>("id");
   const [direction, setDirection] = useState<Direction>("asc");
   const [pendingDeleteIds, setPendingDeleteIds] = useState(
@@ -83,7 +85,14 @@ function TaskList() {
         return;
       }
 
-      const data = await getTask(user.id);
+      const userTaskLists = await getTaskLists(user.id);
+      setTaskLists(userTaskLists ?? []);
+      if (!userTaskLists?.length) {
+        setTask([]);
+        return;
+      }
+
+      const data = await getTasksForLists(userTaskLists.map((list) => list.id));
       setTask((data ?? []) as unknown as Task[]);
     })();
   }, []);
@@ -120,7 +129,9 @@ function TaskList() {
 
   return (
     <div className="w-full min-w-0 space-y-4 text-cyan-950">
-      <h1 className="mb-5 text-2xl sm:text-3xl"><strong>Task List</strong></h1>
+      <TaskListDropdown
+        title={taskLists.map((list) => list.name).filter(Boolean).join(", ") || "Task List"}
+      />
 
       
 

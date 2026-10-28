@@ -11,7 +11,37 @@ function reportTaskError(action: string, error: unknown) {
   alert(`Could not ${action} task: ${message}`);
 }
 
-export async function getTask(userId: string) {
+export type UserTaskList = { id: number; name: string | null };
+
+export async function getTaskLists(userId: string): Promise<UserTaskList[] | null> {
+  const { data: existing, error: fetchError } = await supabase
+    .from("tasklist")
+    .select("id, name")
+    .eq("users_id", userId)
+    .order("id", { ascending: true });
+
+  if (fetchError) {
+    console.error(fetchError);
+    return null;
+  }
+  if (existing.length > 0) return existing;
+
+  const { data: created, error: createError } = await supabase
+    .from("tasklist")
+    .insert({ name: "My Tasks", users_id: userId })
+    .select("id, name")
+    .single();
+
+  if (createError) {
+    console.error(createError);
+    return null;
+  }
+  return [created];
+}
+
+export async function getTasksForLists(taskListIds: number[]) {
+  if (taskListIds.length === 0) return [];
+
   const { data, error } = await supabase.from("task").select(`
     id,
     title,
@@ -20,7 +50,7 @@ export async function getTask(userId: string) {
     priority,
     category:category_id ( name ),
     done
-  `).eq("user_id", userId);
+  `).in("tasklist_id", taskListIds);
 
   if (error) {
     console.error(error);
@@ -68,9 +98,13 @@ export async function addTask(payload: ReturnType<typeof createTaskPayload>) {
     const user = await getCurrentUser();
     if (!user) throw new Error("You must be logged in to add a task.");
 
+    const taskLists = await getTaskLists(user.id);
+    const taskList = taskLists?.[0];
+    if (!taskList) throw new Error("Could not load or create your task list.");
+
     const { error } = await supabase
       .from("task")
-      .insert({ ...payload, user_id: user.id });
+      .insert({ ...payload, tasklist_id: taskList.id });
     if (error) throw error;
     return true;
   } catch (error) {
