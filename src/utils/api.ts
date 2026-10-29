@@ -93,13 +93,17 @@ export async function getTaskByID(taskId: string) {
   return data;
 }
 
-export async function addTask(payload: ReturnType<typeof createTaskPayload>) {
+export async function addTask(
+  payload: ReturnType<typeof createTaskPayload>,
+  requestedTaskListId?: number,
+) {
   try {
     const user = await getCurrentUser();
     if (!user) throw new Error("You must be logged in to add a task.");
 
     const taskLists = await getTaskLists(user.id);
-    const taskList = taskLists?.[0];
+    const taskList = taskLists?.find((list) => list.id === requestedTaskListId)
+      ?? (requestedTaskListId === undefined ? taskLists?.[0] : undefined);
     if (!taskList) throw new Error("Could not load or create your task list.");
 
     const { error } = await supabase

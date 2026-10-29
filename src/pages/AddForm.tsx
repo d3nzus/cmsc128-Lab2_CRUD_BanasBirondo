@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { addTask, getCategories } from "../utils/api";
 import { CategoryOption } from "../types/types.ts";
 import { createTaskPayload, priorityOptions } from "../utils/helper";
@@ -7,6 +7,8 @@ import { createTaskPayload, priorityOptions } from "../utils/helper";
 
 function AddForm() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const taskListId = Number(searchParams.get("tasklist_id"));
 
   const [title, setTitle] = useState("");
   const [time, setTime] = useState("");
@@ -30,13 +32,14 @@ function AddForm() {
 
     const added = await addTask(
       createTaskPayload({ title, date, time, priority, categoryId }),
+      Number.isInteger(taskListId) && taskListId > 0 ? taskListId : undefined,
     );
 
     setSaving(false);
 
     if (!added) return;
 
-    navigate("/home"); // go back to the task list
+    navigate(taskListId > 0 ? `/home?tasklist_id=${taskListId}` : "/home");
   }
 
   return (
