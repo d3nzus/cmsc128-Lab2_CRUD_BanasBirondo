@@ -7,13 +7,25 @@ export async function getCurrentUser() {
 
 export async function signUpWithEmail(email: string, password: string) {
   try {
-    const { error } = await supabase.auth.signUp({
-      email,
+    const { data, error } = await supabase.auth.signUp({
+      email: email.trim(),
       password,
       options: { emailRedirectTo: window.location.origin },
     });
 
-    return error?.message ?? null;
+    if (error) {
+      if (error.message.toLowerCase().includes("already registered")) {
+        return "An account with this email already exists. Log in instead.";
+      }
+      return error.message;
+    }
+
+    // Supabase hides duplicate-account status when email confirmation is enabled.
+    if (data.user?.identities?.length === 0) {
+      return "An account with this email already exists. Log in instead.";
+    }
+
+    return null;
   } catch (error) {
     return error instanceof Error ? error.message : "Unable to create account.";
   }
