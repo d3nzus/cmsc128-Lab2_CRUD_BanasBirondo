@@ -1,6 +1,8 @@
 import { Direction, NewTaskForm, SortKey, Task } from "../types/types.ts";
 
-const pendingDeleteStorageKey = "pending-task-deletes";
+function pendingDeleteStorageKey(userId: string) {
+  return `pending-task-deletes:${userId}`;
+}
 
 export const priorityOptions = [
   { value: "high", label: "High", score: 2 },
@@ -25,6 +27,9 @@ export function createTaskPayload({ title, date, time, priority, categoryId }: N
 
 export function getValue(task: Task, key: SortKey) {
   if (key === "category") return task.category?.name ?? "";
+  if (key === "priority") {
+    return priorityOptions.find((option) => option.value === task.priority)?.score ?? -1;
+  }
   return task[key];
 }
 
@@ -52,10 +57,10 @@ export function sortTasks(tasks: Task[], orderBy: SortKey, direction: Direction)
   return sortedTasks;
 }
 
-export function readPendingDeleteIds(): number[] {
+export function readPendingDeleteIds(userId: string): number[] {
   try {
     const storedIds: unknown = JSON.parse(
-      sessionStorage.getItem(pendingDeleteStorageKey) ?? "[]",
+      sessionStorage.getItem(pendingDeleteStorageKey(userId)) ?? "[]",
     );
     return Array.isArray(storedIds)
       ? storedIds.filter((id): id is number => Number.isInteger(id))
@@ -65,35 +70,37 @@ export function readPendingDeleteIds(): number[] {
   }
 }
 
-function savePendingDeleteIds(taskIds: number[]) {
-  sessionStorage.setItem(pendingDeleteStorageKey, JSON.stringify(taskIds));
+function savePendingDeleteIds(userId: string, taskIds: number[]) {
+  sessionStorage.setItem(pendingDeleteStorageKey(userId), JSON.stringify(taskIds));
 }
 
 export function queuePendingDelete(
   pendingIds: ReadonlySet<number>,
   taskId: number,
+  userId: string,
 ): Set<number> {
   const nextPendingIds = new Set(pendingIds);
   nextPendingIds.add(taskId);
-  savePendingDeleteIds([...nextPendingIds]);
+  savePendingDeleteIds(userId, [...nextPendingIds]);
   return nextPendingIds;
 }
 
 export function undoPendingDelete(
   pendingIds: ReadonlySet<number>,
   taskId: number,
+  userId: string,
 ): Set<number> {
   const nextPendingIds = new Set(pendingIds);
   nextPendingIds.delete(taskId);
-  savePendingDeleteIds([...nextPendingIds]);
+  savePendingDeleteIds(userId, [...nextPendingIds]);
   return nextPendingIds;
 }
 
-export function clearPendingDeleteIds() {
-  sessionStorage.removeItem(pendingDeleteStorageKey);
+export function clearPendingDeleteIds(userId: string) {
+  sessionStorage.removeItem(pendingDeleteStorageKey(userId));
 }
 
-export function getPriorityClass(priority: string) {
+export function getPriorityClass(priority: string | null) {
   switch (priority?.toLowerCase()) {
     case "high":
       return "bg-red-600/70 text-white";
