@@ -13,22 +13,62 @@ function reportTaskError(action: string, error: unknown) {
 
 export type UserTaskList = { id: number; name: string | null };
 
-export async function getTaskLists(userId: string): Promise<UserTaskList[] | null> {
-  const { data: existing, error: fetchError } = await supabase
-    .from("tasklist")
-    .select("id, name")
-    .eq("users_id", userId)
-    .order("id", { ascending: true });
+export async function createTaskList(name: string): Promise<UserTaskList> {
+  const user = await getCurrentUser();
+  if (!user) throw new Error("You must be logged in to create a task list.");
 
-  if (fetchError) {
-    console.error(fetchError);
-    return null;
-  }
-  if (existing.length > 0) return existing;
+  const trimmedName = name.trim();
+  if (!trimmedName) throw new Error("Enter a name for the task list.");
 
   const { data: created, error: createError } = await supabase
     .from("tasklist")
-    .insert({ name: "My Tasks", users_id: userId })
+    .insert({ name: trimmedName })
+    .select("id, name")
+    .single();
+
+  if (createError) throw createError;
+
+  const { error: ownerError } = await supabase
+    .from("tasklist_owners")
+    .insert({ tasklist_id: created.id, user_id: user.id });
+
+  if (ownerError) {
+    console.error(ownerError);
+    throw new Error(`The list was created, but adding you as an owner failed: ${ownerError.message}`);
+  }
+
+  return created;
+}
+
+export async function getTaskLists(userId: string): Promise<UserTaskList[] | null> {
+  const { data: ownerships, error: ownershipError } = await supabase
+    .from("tasklist_owners")
+    .select("tasklist_id")
+    .eq("user_id", userId);
+
+  if (ownershipError) {
+    console.error(ownershipError);
+    return null;
+  }
+
+  if (ownerships.length > 0) {
+    const taskListIds = ownerships.map((ownership) => ownership.tasklist_id);
+    const { data: existing, error: fetchError } = await supabase
+      .from("tasklist")
+      .select("id, name")
+      .in("id", taskListIds)
+      .order("id", { ascending: true });
+
+    if (fetchError) {
+      console.error(fetchError);
+      return null;
+    }
+    return existing;
+  }
+
+  const { data: created, error: createError } = await supabase
+    .from("tasklist")
+    .insert({ name: "My Tasks" })
     .select("id, name")
     .single();
 
@@ -36,6 +76,16 @@ export async function getTaskLists(userId: string): Promise<UserTaskList[] | nul
     console.error(createError);
     return null;
   }
+
+  const { error: ownershipInsertError } = await supabase
+    .from("tasklist_owners")
+    .insert({ tasklist_id: created.id, user_id: userId });
+
+  if (ownershipInsertError) {
+    console.error(ownershipInsertError);
+    return null;
+  }
+
   return [created];
 }
 

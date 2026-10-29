@@ -4,6 +4,7 @@ import App from "./App";
 import AddForm from "../pages/AddForm";
 import EditForm from "../pages/EditForm";
 import LoginPage from "../pages/LoginPage";
+import AddTaskList from "../pages/AddTaskList";
 import { createBrowserRouter, redirect } from "react-router-dom";
 import { getCurrentUser } from "../utils/userAuth";
 
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
         path: "/login",
         element: <LoginPage/>,
       },
+      {
+        path: "/addTaskList",
+        element: <AddTaskList/>,
+      }
     ]
   }
 ]);
