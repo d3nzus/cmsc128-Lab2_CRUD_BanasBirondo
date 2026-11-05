@@ -126,7 +126,7 @@ export async function deleteTasks(taskIds: number[]): Promise<void> {
   await Promise.all(taskIds.map(deleteTask));
 }
 
-export async function editTask(taskID: string, payload: ReturnType<typeof createTaskPayload>): Promise<void> {
+export async function editTask(taskID: number, payload: ReturnType<typeof createTaskPayload>): Promise<void> {
   const { data, error } = await supabase
     .from("task")
     .update(payload)

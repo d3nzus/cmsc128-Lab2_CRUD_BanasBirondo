@@ -7,7 +7,7 @@ function InviteForm({ taskListId }: { taskListId: number | null }) {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     if (taskListId === null) return;
     setSending(true);

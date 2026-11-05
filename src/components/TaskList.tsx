@@ -18,6 +18,7 @@ import { getCurrentUser } from "../utils/userAuth.ts";
 import AddTask from "./AddTask.tsx";
 import TaskListDropdown from "./TaskListDropdown.tsx";
 import TaskTable from "./TaskTable.tsx";
+import InviteForm from "./InviteForm.tsx";
 
 function errorText(error: unknown) {
   return error instanceof Error ? error.message : String(error);
@@ -29,7 +30,7 @@ function TaskList() {
   const [userId, setUserId] = useState<string | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [taskLists, setTaskLists] = useState<UserTaskList[]>([]);
-  const [selectedTaskListId, setSelectedTaskListId] = useState("");
+  const [selectedTaskListId, setSelectedTaskListId] = useState<number | null>(null);
   const [pendingDeleteIds, setPendingDeleteIds] = useState<Set<number>>(new Set());
   const [loadingLists, setLoadingLists] = useState(true);
   const [loadingTasks, setLoadingTasks] = useState(false);
@@ -64,7 +65,7 @@ function TaskList() {
         if (lists.length > 0) {
           const selectedList = lists.find((list) => String(list.id) === requestedTaskListId)
             ?? lists[0];
-          setSelectedTaskListId(String(selectedList.id));
+          setSelectedTaskListId(selectedList.id);
         }
       } catch (error) {
         setLoadError(errorText(error));
@@ -166,6 +167,8 @@ function TaskList() {
       {!loadingLists && !loadingTasks && !loadError && tasks.length === 0 && (
         <p>{selectedTaskListId ? "No tasks in this task list yet." : "Create or select a task list to get started."}</p>
       )}
+
+      <InviteForm taskListId={selectedTaskListId} />
     </div>
   );
 }
