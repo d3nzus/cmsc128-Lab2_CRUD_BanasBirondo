@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { getCurrentUser } from "../utils/userAuth";
 import Title from "./Title";
 import { deleteTaskLists, getTaskLists } from "../utils/api";
@@ -69,8 +70,8 @@ function MyTaskLists({ title = "My Task Lists" }: MyTaskListsProps) {
       {!loading && !error && lists.length === 0 && <p>No task lists yet.</p>}
 
       {lists.length > 0 && (
-        <main>
-          <div className="flex flex-wrap items-center justify-between gap-3 gap-y-3 rounded-lg bg-olive-leaf-600 p-3 text-cyan-50 shadow-xl shadow-teal-600/50 sm:p-4">
+        <main className="flex flex-col gap-3">
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-olive-leaf-600 p-3 text-cyan-50 shadow-xl shadow-teal-600/50 sm:p-4">
             <span>{selected.length} selected</span>
             <button
               className="rounded bg-red-600 px-4 py-2 font-bold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
@@ -104,7 +105,14 @@ function MyTaskLists({ title = "My Task Lists" }: MyTaskListsProps) {
                         onChange={() => toggleSelected(list.id)}
                       />
                     </td>
-                    <td className={cellClass}>{list.name ?? "Untitled list"}</td>
+                    <td className={cellClass}>
+                    <Link
+                        className="font-semibold text-black-forest-700 underline decoration-black-forest-500/40 underline-offset-2 hover:text-black-forest-950 hover:decoration-black-forest-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black-forest-500"
+                        to={`/home?tasklist_id=${list.id}`}
+                    >
+                        {list.name ?? "Untitled list"}
+                    </Link>
+                    </td>
                   </tr>
                 ))}
               </tbody>
