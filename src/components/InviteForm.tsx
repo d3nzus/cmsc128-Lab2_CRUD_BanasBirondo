@@ -29,7 +29,7 @@ function InviteForm({ taskListId }: { taskListId: number | null }) {
       className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-lg bg-olive-leaf-600 p-3 text-cyan-50 shadow-xl shadow-teal-600/50 sm:p-4"
       onSubmit={handleSubmit}
     >
-      <label htmlFor="invite-email">Invite by email:</label>
+      <label htmlFor="invite-email">Invite someone to this list by email:</label>
       <input
         className="min-w-0 rounded-md border-0 bg-cornsilk-300 px-2 py-1.5 text-cyan-950"
         id="invite-email"
