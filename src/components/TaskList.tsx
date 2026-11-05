@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useBlocker, useSearchParams } from "react-router-dom";
+import { Link, useBlocker, useSearchParams } from "react-router-dom";
 import type { Task } from "../types/types.ts";
 import {
   deleteTasks,
@@ -141,34 +141,165 @@ function TaskList() {
   }, [blocker, pendingDeleteIds, userId]);
 
   return (
-    <div className="w-full min-w-0 space-y-4 text-cyan-950">
-      <TaskListDropdown
-        taskLists={taskLists}
-        selectedTaskListId={selectedTaskListId}
-        onSelect={setSelectedTaskListId}
-      />
-
-      <div className="space-y-3">
-        <div className="flex w-full justify-center sm:justify-start">
-          <AddTask taskListId={selectedTaskListId} />
+    <div className="space-y-5 text-cyan-950">
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-olive-leaf-700">
+            Workspace
+          </p>
+          <h1 className="text-2xl font-bold tracking-tight text-cyan-950 sm:text-3xl">
+            Your tasks
+          </h1>
         </div>
-        <TaskTable
-          tasks={tasks}
-          pendingDeleteIds={pendingDeleteIds}
-          onDelete={handleDelete}
-          onUndoDelete={handleUndoDelete}
-          onToggleDone={(task) => void handleToggleDone(task)}
-        />
+        <p className="max-w-md text-sm leading-6 text-cyan-800 sm:text-right">
+          Pick a list, add tasks, and keep everyone in sync.
+        </p>
       </div>
 
-      {(loadingLists || loadingTasks) && <p role="status">Loading...</p>}
-      {loadError && <p className="text-red-800" role="alert">{loadError}</p>}
-      {actionError && <p className="text-red-800" role="alert">{actionError}</p>}
-      {!loadingLists && !loadingTasks && !loadError && tasks.length === 0 && (
-        <p>{selectedTaskListId ? "No tasks in this task list yet." : "Create or select a task list to get started."}</p>
+      {loadError && (
+        <p
+          className="flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-900"
+          role="alert"
+        >
+          <svg
+            aria-hidden="true"
+            className="mt-0.5 size-4 shrink-0"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 8v5M12 16.5v.5" />
+          </svg>
+          {loadError}
+        </p>
       )}
 
-      <InviteForm taskListId={selectedTaskListId} />
+      {actionError && (
+        <p
+          className="flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-900"
+          role="alert"
+        >
+          <svg
+            aria-hidden="true"
+            className="mt-0.5 size-4 shrink-0"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 8v5M12 16.5v.5" />
+          </svg>
+          {actionError}
+        </p>
+      )}
+
+      {loadingLists ? (
+        <div
+          className="flex items-center gap-3 rounded-2xl border border-olive-leaf-200 bg-white/80 p-5 text-sm font-medium text-cyan-800 shadow-sm"
+          role="status"
+        >
+          <svg
+            aria-hidden="true"
+            className="size-5 animate-spin text-olive-leaf-600"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            />
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 0 1 8-8V0C5.4 0 0 5.4 0 12h4Z"
+            />
+          </svg>
+          Loading your task lists…
+        </div>
+      ) : loadError && taskLists.length === 0 ? null : taskLists.length === 0 ? (
+        <section className="rounded-3xl border border-dashed border-olive-leaf-300 bg-white/80 p-8 text-center shadow-sm sm:p-12">
+          <span className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-olive-leaf-100 text-olive-leaf-700">
+            <svg
+              aria-hidden="true"
+              className="size-7"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M4 7h16" />
+              <path d="M5 7l1 13h12l1-13" />
+              <path d="M9 7V4h6v3" />
+              <path d="M9 12h6M9 16h4" />
+            </svg>
+          </span>
+          <h2 className="mt-4 text-xl font-bold text-cyan-950">No task lists yet</h2>
+          <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-cyan-800">
+            Create your first list to start organizing tasks, setting priorities, and
+            inviting teammates.
+          </p>
+          <Link
+            className="mt-6 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-black-forest-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-black-forest-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black-forest-700"
+            to="/addTaskList"
+          >
+            <svg
+              aria-hidden="true"
+              className="size-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M12 5v14M5 12h14" />
+            </svg>
+            Create a task list
+          </Link>
+        </section>
+      ) : (
+        <>
+          <section className="rounded-2xl border border-olive-leaf-200 bg-white/85 p-4 shadow-sm sm:p-5">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+              <TaskListDropdown
+                taskLists={taskLists}
+                selectedTaskListId={selectedTaskListId}
+                onSelect={setSelectedTaskListId}
+              />
+              <AddTask taskListId={selectedTaskListId} />
+            </div>
+          </section>
+
+          <TaskTable
+            tasks={tasks}
+            loading={loadingTasks}
+            pendingDeleteIds={pendingDeleteIds}
+            emptyMessage={
+              selectedTaskListId
+                ? "No tasks in this list yet. Use “Add task” to create one."
+                : "Create or select a task list to get started."
+            }
+            onDelete={handleDelete}
+            onUndoDelete={handleUndoDelete}
+            onToggleDone={(task) => void handleToggleDone(task)}
+          />
+
+          <InviteForm taskListId={selectedTaskListId} />
+        </>
+      )}
     </div>
   );
 }

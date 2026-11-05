@@ -62,3 +62,37 @@
     --color-copperwood-950: oklch(19.23% 0.030 61.27);
 
 }
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        @apply bg-teal-100 text-cyan-950 antialiased;
+        text-rendering: optimizeLegibility;
+    }
+
+    ::selection {
+        @apply bg-cornsilk-300 text-black-forest-950;
+    }
+
+    :focus-visible {
+        outline: 2px solid var(--color-black-forest-500);
+        outline-offset: 2px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

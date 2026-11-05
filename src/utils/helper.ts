@@ -103,14 +103,41 @@ export function clearPendingDeleteIds(userId: string) {
 export function getPriorityClass(priority: string | null) {
   switch (priority?.toLowerCase()) {
     case "high":
-      return "bg-red-600/70 text-white";
+      return "bg-red-100 text-red-900 ring-red-300";
     case "mid":
     case "medium":
-      return "bg-orange-500/70 text-white";
+      return "bg-orange-100 text-orange-900 ring-orange-300";
     case "low":
     case "lo":
-      return "bg-yellow-300/70 text-black";
+      return "bg-yellow-100 text-yellow-950 ring-yellow-300";
     default:
-      return "";
+      return "bg-olive-leaf-100 text-olive-leaf-900 ring-olive-leaf-300";
   }
+}
+
+export function formatDueDate(value: string | null | undefined) {
+  if (!value) return "—";
+
+  const [year, month, day] = value.split("-").map(Number);
+  if (!year || !month || !day) return value;
+
+  return new Date(year, month - 1, day).toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+export function formatDueTime(value: string | null | undefined) {
+  if (!value) return "—";
+
+  const [hours, minutes] = value.split(":").map(Number);
+  if (Number.isNaN(hours) || Number.isNaN(minutes)) return value;
+
+  const date = new Date();
+  date.setHours(hours, minutes, 0, 0);
+  return date.toLocaleTimeString(undefined, {
+    hour: "numeric",
+    minute: "2-digit",
+  });
 }

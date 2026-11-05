@@ -1,9 +1,16 @@
-import React from "react";
+import type { ReactNode } from "react";
 
-function Title({children}){
-    return(
-        <h1 className="w-full min-w-0 text-cyan-950 text-xl font-bold">{children}</h1>
-    )
+type TitleProps = {
+  children: ReactNode;
+  id?: string;
+};
+
+function Title({ children, id }: TitleProps) {
+  return (
+    <h2 id={id} className="w-full min-w-0 text-lg font-bold tracking-tight text-cyan-950 sm:text-xl">
+      {children}
+    </h2>
+  );
 }
 
 export default Title;
