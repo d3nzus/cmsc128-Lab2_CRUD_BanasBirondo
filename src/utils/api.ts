@@ -96,6 +96,21 @@ export async function addTask(
   if (error) throw error;
 }
 
+export async function deleteTaskList(taskListId: number): Promise<void> {
+  const { data, error } = await supabase
+    .from("tasklist")
+    .delete()
+    .eq("id", taskListId)
+    .select("id")
+    .maybeSingle();
+  if (error) throw error;
+  if (!data) throw new Error(`Task list ${taskListId} was not deleted.`);
+}
+
+export async function deleteTaskLists(taskListIds: number[]): Promise<void> {
+  await Promise.all(taskListIds.map(deleteTaskList));
+}
+
 export async function deleteTask(taskId: number): Promise<void> {
   const { data, error } = await supabase
     .from("task")
