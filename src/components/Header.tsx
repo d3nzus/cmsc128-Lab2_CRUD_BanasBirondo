@@ -7,7 +7,13 @@ function Header() {
             <Link to="/home" className="text-2xl font-bold text-black">
                 128 Lab CRUD
             </Link>
-            <SignOutButton />
+            <div className="flex items-center gap-10">
+                <Link to="/profile" className="text-2xl font-bold text-black">
+                Profile
+                </Link>
+                <SignOutButton />
+            </div>
+            
         </header>
     );
 }
