@@ -54,6 +54,10 @@ Pivoted from PHP-MySQL to React.
 
    The app will be available at `http://localhost:5173` (or the port Vite prints in the terminal).
 
+## Online Access
+
+The project can also be accessed using the [deployment](https://demonicduo128lab.vercel.app).
+
 ## Database Schema
 
 | Table | Columns |
@@ -69,6 +73,35 @@ Pivoted from PHP-MySQL to React.
 | **Read** | View all tasks in a table, joined with their category name |
 | **Update** | Edit an existing task's details or mark it as done |
 | **Delete** | Remove a task from the list |
+
+## Schema
+**category**
+stores the categories of the tasks. the task table references it using category_id
+| id | name |
+|---|---|
+
+**profiles**
+stores the usernames of users because users are identified using supabase auth user ids.
+| id | username |
+|---|---|
+
+**task**
+stores the tasks. each task is owned by a tasklist.
+| id | title | due_date | due_time | priority | category_id | done | tasklist_id |
+|---|---|---|---|---|---|---|---|
+
+**tasklist**
+stores tasklists, each tasklist has a name and a creator(user id)
+| id | name | created_by |
+|---|---|---|
+
+**tasklist_owners**
+tasklists can have multiple owners
+| id | user_id |
+|---|---|
+
+## How Collaborative Tasklists work
+The collaborative tasklist feature works by using the tasklist_owner table in the database where each row contains a tasklist_id, user_id pair. Tasklists can have multiple users. When displaying tasklists, it only loads all tasklists that match the user_id of the logged in user.
 
 ## Authors
 
