@@ -165,3 +165,36 @@ export async function getUserName(): Promise<string | null>{
 
   return data.username;
 }
+
+export type TaskListInvite = {
+  id: number;
+  tasklist_id: number;
+  tasklist_name: string | null;
+  invited_by_username: string | null;
+};
+
+export async function getMyInvites(): Promise<TaskListInvite[]> {
+  const { data, error } = await supabase.rpc("get_my_invites");
+  if (error) throw new Error(error.message);
+  return data ?? [];
+}
+
+export async function sendInvite(taskListId: number, email: string): Promise<void> {
+  const trimmed = email.trim();
+  if (!trimmed) throw new Error("Enter an email to invite.");
+  const { error } = await supabase.rpc("send_invite", {
+    list_id: taskListId,
+    invitee_email: trimmed,
+  });
+  if (error) throw new Error(error.message);
+}
+
+export async function acceptInvite(inviteId: number): Promise<void> {
+  const { error } = await supabase.rpc("accept_invite", { invite_id: inviteId });
+  if (error) throw new Error(error.message);
+}
+
+export async function declineInvite(inviteId: number): Promise<void> {
+  const { error } = await supabase.rpc("decline_invite", { invite_id: inviteId });
+  if (error) throw new Error(error.message);
+}

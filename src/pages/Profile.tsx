@@ -3,11 +3,13 @@ import { useEffect, useState } from "react";
 import { getCurrentUser } from "../utils/userAuth";
 import Title from "../components/Title";
 import MyTaskLists from "../components/MyTaskLists";
+import Invitations from "../components/Invitations";
 import { getUserName } from "../utils/api";
 
 
 function Profile() {
     const [username, setUsername] = useState("");
+    const [listsVersion, setListsVersion] = useState(0);
     useEffect(() => {
     async function fetchUsername() {
         const result = await getUserName();
@@ -19,8 +21,8 @@ function Profile() {
         <main className="flex min-h-screen w-full justify-center bg-teal-100 p-3 inset-shadow-teal-200 inset-shadow-sm sm:p-6">
             <div className="flex w-full max-w-2xl min-w-0 flex-col gap-4 text-cyan-950">
             <Title>Hello {username || "Loading..."}</Title>
-            <MyTaskLists title="Your Task Lists" />
-            <Title>Invitations</Title>
+            <MyTaskLists title="Your Task Lists" key={listsVersion} />
+            <Invitations onAccepted={() => setListsVersion((v) => v + 1)} />
             </div>
         </main>
     )
