@@ -17,14 +17,6 @@ function Profile(){
     return(
         <main className="flex min-h-screen w-full justify-center bg-teal-100 p-3 inset-shadow-teal-200 inset-shadow-sm sm:p-6">
             <Title>Hello {username || "Loading..."} </Title>
-            <div>
-                <Title>Your Tasklists</Title>
-                <TaskListDropdown
-                    taskLists={taskLists}
-                    selectedTaskListId={selectedTaskListId}
-                    onSelect={setSelectedTaskListId}
-                />
-            </div>
             <Title>Invitations</Title>
         </main>
     )
