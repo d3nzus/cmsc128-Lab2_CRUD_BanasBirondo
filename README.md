@@ -76,12 +76,12 @@ The project can also be accessed using the [deployment](https://demonicduo128lab
 
 ## Schema
 **category**
-stores the categories of the tasks. the task table references it using category_id
+stores the categories of the tasks. the task table references it using `category_id`
 | id | name |
 |---|---|
 
 **profiles**
-stores the usernames of users because users are identified using supabase auth user ids.
+stores the usernames of users because users are identified using supabase `auth.user.id` .
 | id | username |
 |---|---|
 
@@ -100,8 +100,14 @@ tasklists can have multiple owners
 | id | user_id |
 |---|---|
 
+**tasklist_invites**
+handles the tasklist invites, invites are deleted as soon as it is resolved.
+| id | tasklist_id | invited_user_id| invited_by | created_at |
+|---|---|---|---|---|
+
 ## How Collaborative Tasklists work
-The collaborative tasklist feature works by using the tasklist_owner table in the database where each row contains a tasklist_id, user_id pair. Tasklists can have multiple users. When displaying tasklists, it only loads all tasklists that match the user_id of the logged in user.
+The collaborative tasklist feature works by using the tasklist_owner table in the database where each row contains a tasklist_id, user_id pair. Tasklists can have multiple users. When displaying tasklists, it only loads all tasklists that match the user_id of the logged in user. New users to the tasklist are added using their email, where the invite appears in the invite inbox within the user's profile  
+Currently, there is no heirarchy in the tasklist ownership. Every user who has been given access to the task list may delete or modify the tasks or the list itself.
 
 ## Authors
 
