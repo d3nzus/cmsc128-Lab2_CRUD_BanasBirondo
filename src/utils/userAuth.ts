@@ -18,7 +18,10 @@ export async function signUpWithEmail(email: string, password: string, username:
     const { data, error } = await supabase.auth.signUp({
       email: email.trim(),
       password,
-      options: { emailRedirectTo: window.location.origin },
+      options: {
+        emailRedirectTo: window.location.origin,
+        data: { username: trimmedUsername }, // read by the handle_new_user trigger
+      },
     });
 
     if (error) {
