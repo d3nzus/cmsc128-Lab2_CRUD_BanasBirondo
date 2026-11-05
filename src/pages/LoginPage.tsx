@@ -11,11 +11,13 @@ function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const [username, setUsername] = useState("");
  
   function switchMode() {
     setMode(mode === "login" ? "signup" : "login");
     setError("");
     setMessage("");
+    setUsername("");
   }
  
   async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
@@ -26,7 +28,7 @@ function LoginPage() {
  
     const authError =
       mode === "signup"
-        ? await signUpWithEmail(email, password)
+        ? await signUpWithEmail(email, password, username)
         : await signInWithEmail(email, password);
 
     setLoading(false);
@@ -38,7 +40,9 @@ function LoginPage() {
 
     if (mode === "signup") {
       setMessage("Check your email and click the link to confirm your account.");
+      //clear fields on successful signup
       setPassword("");
+      setUsername("");
       return;
     }
 
@@ -56,6 +60,24 @@ function LoginPage() {
         </h1>
 
         <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
+          {mode === "signup" && (
+            <div>
+              <label className="mb-1.5 block text-sm font-semibold" htmlFor="username">
+                Username
+              </label>
+              <input
+                className="w-full min-w-0 rounded-md border border-olive-leaf-300 bg-white px-3 py-2.5 text-cyan-950 shadow-sm outline-none focus:border-copperwood-500 focus:ring-2 focus:ring-copperwood-300"
+                id="username"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                autoComplete="username"
+                minLength={3}
+                maxLength={30}
+                required
+              />
+            </div>
+          )}
           <div>
             <label className="mb-1.5 block text-sm font-semibold" htmlFor="email">
               Email
