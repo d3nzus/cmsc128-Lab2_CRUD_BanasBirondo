@@ -1,6 +1,6 @@
-import React from "react";
+import type { ReactNode } from "react";
 
-function Title({children}){
+function Title({ children }: { children: ReactNode }) {
     return(
         <h1 className="w-full min-w-0 text-cyan-950 text-xl font-bold">{children}</h1>
     )

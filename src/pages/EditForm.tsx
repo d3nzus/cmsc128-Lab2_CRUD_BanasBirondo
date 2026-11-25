@@ -42,7 +42,9 @@ function EditForm() {
 
   async function handleSubmit(values: NewTaskForm) {
     if (!taskId) throw new Error("Task ID was not provided.");
-    await editTask(taskId, createTaskPayload(values));
+    const id = Number(taskId);
+    if (!Number.isInteger(id)) throw new Error("Task ID is invalid.");
+    await editTask(id, createTaskPayload(values));
     navigate(requestedTaskListId
       ? `/home?tasklist_id=${encodeURIComponent(requestedTaskListId)}`
       : "/home");
