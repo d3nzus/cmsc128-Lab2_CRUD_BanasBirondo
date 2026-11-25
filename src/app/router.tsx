@@ -5,9 +5,9 @@ import EditForm from "../pages/EditForm";
 import LoginPage from "../pages/LoginPage";
 import AddTaskList from "../pages/AddTaskList";
 import Profile from "../pages/Profile";
+import CalendarPage from "../pages/CalendarPage";
 import { createBrowserRouter, redirect } from "react-router-dom";
 import { getCurrentUser } from "../utils/userAuth";
-
 const router = createBrowserRouter([
     {
     element: <App/>,
@@ -38,6 +38,9 @@ const router = createBrowserRouter([
       },{
         path: "/profile",
         element: <Profile/>,
+      },{
+        path: "/calendar",
+        element: <CalendarPage/>,
       }
     ]
   }

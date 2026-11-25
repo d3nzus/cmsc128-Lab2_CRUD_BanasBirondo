@@ -14,6 +14,7 @@ import {
   readPendingDeleteIds,
   undoPendingDelete,
 } from "../utils/helper.ts";
+import { Link } from "react-router-dom";
 import { getCurrentUser } from "../utils/userAuth.ts";
 import AddTask from "./AddTask.tsx";
 import TaskListDropdown from "./TaskListDropdown.tsx";
@@ -149,8 +150,16 @@ function TaskList() {
       />
 
       <div className="space-y-3">
-        <div className="flex w-full justify-center sm:justify-start">
+        <div className="flex w-full flex-wrap items-center justify-center gap-3 sm:justify-start">
           <AddTask taskListId={selectedTaskListId} />
+          {selectedTaskListId && (
+            <Link
+              to={`/calendar?tasklist_id=${selectedTaskListId}`}
+              className="inline-flex h-full items-center rounded-xl bg-black-forest-500 px-4 py-2 font-bold text-white shadow-xl shadow-teal-600/50 hover:bg-black-forest-700 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Calendar
+            </Link>
+          )}
         </div>
         <TaskTable
           tasks={tasks}
