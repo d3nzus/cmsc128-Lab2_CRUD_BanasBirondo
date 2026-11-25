@@ -67,7 +67,17 @@ function MyTaskLists({ title = "My Task Lists" }: MyTaskListsProps) {
 
       {loading && <p role="status">Loading...</p>}
       {error && <p className="text-red-800" role="alert">{error}</p>}
-      {!loading && !error && lists.length === 0 && <p>No task lists yet.</p>}
+      {!loading && !error && lists.length === 0 && (
+        <div className="flex flex-wrap items-center gap-3">
+          <p>No task lists yet.</p>
+          <Link
+            className="inline-flex min-h-11 items-center justify-center rounded-md bg-black-forest-700 px-4 py-2 font-bold text-white hover:bg-black-forest-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cornsilk-300"
+            to="/addTaskList"
+          >
+            Create a task list
+          </Link>
+        </div>
+      )}
 
       {lists.length > 0 && (
         <main className="flex flex-col gap-3">
