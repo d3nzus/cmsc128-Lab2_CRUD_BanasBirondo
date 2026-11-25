@@ -14,7 +14,7 @@ function TaskTable({ tasks, deletingId, onDelete, onToggleDone }: TaskTableProps
   const [orderBy, setOrderBy] = useState<SortKey>("id");
   const [direction, setDirection] = useState<Direction>("asc");
   const sortedTasks = useMemo(() => sortTasks(tasks, orderBy, direction), [tasks, orderBy, direction]);
-  const cellClass = "p-3 sm:p-4";
+  const cellClass = "p-3 sm:p-4 text-center";
   const headerClass = "bg-olive-leaf-700 p-3 text-cyan-50 sm:p-4";
 
   return (
@@ -83,7 +83,7 @@ function TaskTable({ tasks, deletingId, onDelete, onToggleDone }: TaskTableProps
                   <td className={cellClass}>{task.due_date}</td>
                   <td className={cellClass}>{task.due_time}</td>
                   <td className={cellClass}>
-                    <span className={`inline-flex rounded px-2 py-1 text-sm font-semibold ${getPriorityClass(task.priority)}`}>
+                    <span className={`inline-flex rounded-full px-5 py-1 text-sm font-semibold shadow-xs ${getPriorityClass(task.priority)}`}>
                       {task.priority ?? "—"}
                     </span>
                   </td>
