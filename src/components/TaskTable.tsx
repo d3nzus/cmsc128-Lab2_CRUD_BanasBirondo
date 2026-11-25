@@ -16,12 +16,12 @@ function TaskTable({ tasks, deletingId, onDelete, onToggleDone }: TaskTableProps
   const [orderBy, setOrderBy] = useState<SortKey>("id");
   const [direction, setDirection] = useState<Direction>("asc");
   const sortedTasks = useMemo(() => sortTasks(tasks, orderBy, direction), [tasks, orderBy, direction]);
-  const cellClass = "p-3 sm:p-4";
+  const cellClass = "p-3 sm:p-4 text-center";
   const headerClass = "bg-olive-leaf-700 p-3 text-cyan-50 sm:p-4";
 
   return (
     <>
-      <form className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-lg bg-olive-leaf-700 p-3 text-cyan-50 shadow-xl shadow-teal-600/50 sm:p-4">
+      <form className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-lg bg-olive-leaf-700 p-3 text-cyan-50 shadow-sm shadow-teal-600/50 sm:p-4">
         <label htmlFor="order">Order By:</label>
         <select
           className="min-h-11 min-w-0 rounded-md border-0 bg-cornsilk-300 px-2 py-1.5 text-cyan-950"
@@ -48,7 +48,7 @@ function TaskTable({ tasks, deletingId, onDelete, onToggleDone }: TaskTableProps
         </select>
       </form>
 
-      <div className="hidden w-full max-w-full overflow-x-auto rounded-xl shadow-xl shadow-teal-600/50 md:block">
+      <div className="hidden w-full max-w-full overflow-x-auto rounded-xl shadow-sm shadow-teal-600/50 md:block">
         <table className="w-full min-w-[900px] border-collapse text-cyan-950">
           <caption className="sr-only">Tasks in the selected task list</caption>
           <thead>
@@ -77,7 +77,7 @@ function TaskTable({ tasks, deletingId, onDelete, onToggleDone }: TaskTableProps
                   <td className={cellClass}>{task.due_date}</td>
                   <td className={cellClass}>{task.due_time}</td>
                   <td className={cellClass}>
-                    <span className={`inline-flex rounded px-2 py-1 text-sm font-semibold ${getPriorityClass(task.priority)}`}>
+                    <span className={`inline-flex rounded-full px-5 py-1 text-sm font-semibold shadow-xs ${getPriorityClass(task.priority)}`}>
                       {task.priority ?? "—"}
                     </span>
                   </td>

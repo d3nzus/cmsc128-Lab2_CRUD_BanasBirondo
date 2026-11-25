@@ -44,7 +44,7 @@ function TaskToast({
     <div
       ref={toastRef}
       role={isError ? "alert" : "status"}
-      className="group fixed inset-x-4 bottom-4 z-50 mx-auto flex max-w-md items-center justify-between gap-3 overflow-hidden rounded-lg bg-olive-leaf-950 px-4 py-3 text-cornsilk-100 shadow-xl sm:inset-x-auto sm:right-6 sm:left-auto"
+      className="group fixed inset-x-4 bottom-4 z-50 mx-auto flex max-w-md items-center justify-between gap-3 overflow-hidden rounded-lg bg-olive-leaf-950 px-4 py-3 text-cornsilk-100 shadow-xl/30 sm:inset-x-auto sm:right-6 sm:left-auto"
     >
       <p className="min-w-0 text-sm">
         {toast.kind === "undo" ? `Deleted "${toast.task.title}".` : toast.text}
@@ -229,7 +229,7 @@ function TaskList() {
           {selectedTaskListId && (
             <Link
               to={`/calendar?tasklist_id=${selectedTaskListId}`}
-              className="inline-flex h-full items-center rounded-xl bg-black-forest-500 px-4 py-2 font-bold text-white shadow-sm shadow-teal-600/50 hover:bg-black-forest-700 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex h-full items-center rounded-xl bg-olive-leaf-950 px-4 py-2 font-bold text-white shadow-sm shadow-teal-600/50 hover:bg-olive-leaf-900 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Calendar
             </Link>

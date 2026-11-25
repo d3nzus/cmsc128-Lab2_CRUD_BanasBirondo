@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import type { CategoryOption, NewTaskForm } from "../types/types.ts";
 import { getCategories } from "../utils/api.ts";
 import { priorityOptions } from "../utils/helper.ts";
@@ -29,10 +29,9 @@ function TaskForm({
 }: TaskFormProps) {
   const [values, setValues] = useState(initialValues);
   const [categories, setCategories] = useState<CategoryOption[]>([]);
-  const [categoriesLoaded, setCategoriesLoaded] = useState(false);
-  const [categoryError, setCategoryError] = useState("");
   const [saving, setSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     let cancelled = false;
@@ -42,20 +41,13 @@ function TaskForm({
       })
       .catch((error: unknown) => {
         if (!cancelled) {
-          setCategoryError(error instanceof Error ? error.message : String(error));
+          setErrorMessage(error instanceof Error ? error.message : String(error));
         }
-      })
-      .finally(() => {
-        if (!cancelled) setCategoriesLoaded(true);
       });
     return () => {
       cancelled = true;
     };
   }, []);
-
-  const noCategories = categoriesLoaded && !categoryError && categories.length === 0;
-  const categoriesLoading = !categoriesLoaded;
-  const categoriesUnavailable = Boolean(categoryError) || noCategories;
 
   function updateValue(field: keyof NewTaskForm, value: string) {
     setValues((current) => ({ ...current, [field]: value }));
@@ -158,28 +150,13 @@ function TaskForm({
                 id="task-category"
                 value={values.categoryId}
                 onChange={(event) => updateValue("categoryId", event.target.value)}
-                aria-describedby={categoriesUnavailable ? "category-help" : undefined}
-                disabled={saving || categoriesLoading || categoriesUnavailable}
                 required
               >
-                <option value="" disabled>
-                  {categoriesLoading
-                    ? "Loading categories..."
-                    : categoriesUnavailable
-                      ? "No categories available"
-                      : "Select a category"}
-                </option>
+                <option value="" disabled>Select a category</option>
                 {categories.map((category) => (
                   <option key={category.id} value={category.id}>{category.name}</option>
                 ))}
               </select>
-              {categoriesUnavailable && (
-                <p id="category-help" className="mt-1 text-sm text-red-100" role="alert">
-                  {categoryError
-                    ? `Could not load categories: ${categoryError}. Reload the page to try again.`
-                    : "No categories exist yet, so a task cannot be saved. Add a category in Supabase and reload the page."}
-                </p>
-              )}
             </div>
           </div>
 
@@ -188,14 +165,17 @@ function TaskForm({
           <div className="flex flex-col-reverse gap-3 border-t border-olive-leaf-500 pt-5 sm:flex-row sm:justify-end">
             <Link
               className="inline-flex min-h-11 items-center justify-center rounded-md border border-cornsilk-300/70 bg-transparent px-5 py-2 font-bold text-cornsilk-50 hover:bg-olive-leaf-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cornsilk-300"
-              to="/home"
+              to="#" onClick={(e) => {
+                e.preventDefault();
+                navigate(-1);
+              }}
             >
               Cancel
             </Link>
             <button
               className="inline-flex min-h-11 items-center justify-center rounded-md bg-cornsilk-300 px-5 py-2 font-bold text-olive-leaf-950 hover:bg-cornsilk-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cornsilk-300 disabled:cursor-not-allowed disabled:opacity-50"
               type="submit"
-              disabled={saving || categoriesLoading || categoriesUnavailable}
+              disabled={saving}
             >
               {saving ? savingLabel : submitLabel}
             </button>
