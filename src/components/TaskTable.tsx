@@ -48,15 +48,16 @@ function TaskTable({ tasks, deletingId, onDelete, onToggleDone }: TaskTableProps
 
       <div className="w-full max-w-full overflow-x-auto rounded-xl shadow-xl shadow-teal-600/50">
         <table className="w-full min-w-[900px] border-collapse text-cyan-950">
+          <caption className="sr-only">Tasks in the selected task list</caption>
           <thead>
             <tr>
-              <th className={headerClass}>Status</th>
-              <th className={headerClass}>Title</th>
-              <th className={headerClass}>Due Date</th>
-              <th className={headerClass}>Due Time</th>
-              <th className={headerClass}>Priority</th>
-              <th className={headerClass}>Category</th>
-              <th className={headerClass}>Actions</th>
+              <th className={headerClass} scope="col">Status</th>
+              <th className={headerClass} scope="col">Title</th>
+              <th className={headerClass} scope="col">Due Date</th>
+              <th className={headerClass} scope="col">Due Time</th>
+              <th className={headerClass} scope="col">Priority</th>
+              <th className={headerClass} scope="col">Category</th>
+              <th className={headerClass} scope="col">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -72,6 +73,8 @@ function TaskTable({ tasks, deletingId, onDelete, onToggleDone }: TaskTableProps
                       className={`w-32 rounded px-2 py-2 font-bold text-white shadow-xl/30 shadow-black-forest-800 ${task.done ? "bg-green-700 hover:bg-green-800" : "bg-black-forest-700 hover:bg-black-forest-950"}`}
                       type="button"
                       onClick={() => onToggleDone(task)}
+                      aria-pressed={task.done}
+                      aria-label={`${task.done ? "Done" : "Not Done"}: ${task.title}`}
                     >
                       {task.done ? "Done" : "Not Done"}
                     </button>
@@ -92,12 +95,15 @@ function TaskTable({ tasks, deletingId, onDelete, onToggleDone }: TaskTableProps
                         type="button"
                         onClick={() => onDelete(task)}
                         disabled={deleting}
+                        aria-label={`Delete ${task.title}`}
+                        data-task-delete={task.id}
                       >
                         {deleting ? "Deleting..." : "Delete"}
                       </button>
                       <Link
                         className="inline-flex w-full justify-center rounded bg-black-forest-700 px-2 py-2 font-bold text-white hover:bg-black-forest-900"
                         to={`/editForm?task_id=${task.id}&tasklist_id=${task.tasklist_id}`}
+                        aria-label={`Edit ${task.title}`}
                       >
                         Edit
                       </Link>

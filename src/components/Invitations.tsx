@@ -69,11 +69,12 @@ function Invitations({ title = "Invitations", onAccepted }: InvitationsProps) {
       {invites.length > 0 && (
         <div className="w-full max-w-full overflow-x-auto rounded-xl shadow-xl shadow-teal-600/50">
           <table className="w-full border-collapse text-cyan-950">
+            <caption className="sr-only">Pending invitations</caption>
             <thead>
               <tr>
-                <th className={`${headerClass} text-left`}>Task List</th>
-                <th className={`${headerClass} text-left`}>Invited By</th>
-                <th className={headerClass}>Actions</th>
+                <th className={`${headerClass} text-left`} scope="col">Task List</th>
+                <th className={`${headerClass} text-left`} scope="col">Invited By</th>
+                <th className={headerClass} scope="col">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -91,6 +92,7 @@ function Invitations({ title = "Invitations", onAccepted }: InvitationsProps) {
                         type="button"
                         onClick={() => handleAccept(invite.id)}
                         disabled={busyId !== null}
+                        aria-label={`Accept invitation to ${invite.tasklist_name ?? "Untitled list"}`}
                       >
                         Accept
                       </button>
@@ -99,6 +101,7 @@ function Invitations({ title = "Invitations", onAccepted }: InvitationsProps) {
                         type="button"
                         onClick={() => handleDecline(invite.id)}
                         disabled={busyId !== null}
+                        aria-label={`Decline invitation to ${invite.tasklist_name ?? "Untitled list"}`}
                       >
                         Decline
                       </button>

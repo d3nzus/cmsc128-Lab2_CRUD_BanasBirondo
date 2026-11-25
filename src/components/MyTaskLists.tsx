@@ -94,10 +94,11 @@ function MyTaskLists({ title = "My Task Lists" }: MyTaskListsProps) {
           </div>
           <div className="w-full max-w-full overflow-x-auto rounded-xl shadow-xl shadow-teal-600/50">
             <table className="w-full border-collapse text-cyan-950">
+              <caption className="sr-only">My task lists</caption>
               <thead>
                 <tr>
-                  <th className={headerClass}>Select</th>
-                  <th className={`${headerClass} text-left`}>Name</th>
+                  <th className={headerClass} scope="col">Select</th>
+                  <th className={`${headerClass} text-left`} scope="col">Name</th>
                 </tr>
               </thead>
               <tbody>
