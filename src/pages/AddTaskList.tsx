@@ -40,7 +40,7 @@ function AddTaskList() {
             </label>
             <input
               autoFocus
-              className="w-full rounded-md border border-olive-leaf-300 bg-white px-3 py-2.5 text-cyan-950 shadow-sm outline-none focus:border-copperwood-500 focus:ring-2 focus:ring-copperwood-300"
+              className="w-full rounded-md border border-olive-leaf-300 bg-white px-3 py-2.5 text-cyan-950 shadow-sm outline-none focus:border-copperwood-700 focus:ring-2 focus:ring-copperwood-300"
               id="tasklist-name"
               maxLength={100}
               onChange={(event) => setName(event.target.value)}
@@ -53,13 +53,13 @@ function AddTaskList() {
 
           <div className="flex flex-col-reverse gap-3 border-t border-olive-leaf-500 pt-5 sm:flex-row sm:justify-end">
             <Link
-              className="inline-flex min-h-11 items-center justify-center rounded-md bg-copperwood-600 px-5 py-2 font-bold text-white hover:bg-copperwood-700"
+              className="inline-flex min-h-11 items-center justify-center rounded-md border border-cornsilk-300/70 bg-transparent px-5 py-2 font-bold text-cornsilk-50 hover:bg-olive-leaf-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cornsilk-300"
               to="/home"
             >
               Cancel
             </Link>
             <button
-              className="inline-flex min-h-11 items-center justify-center rounded-md bg-black-forest-700 px-5 py-2 font-bold text-white hover:bg-black-forest-900 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex min-h-11 items-center justify-center rounded-md bg-cornsilk-300 px-5 py-2 font-bold text-olive-leaf-950 hover:bg-cornsilk-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cornsilk-300 disabled:cursor-not-allowed disabled:opacity-50"
               disabled={saving}
               type="submit"
             >

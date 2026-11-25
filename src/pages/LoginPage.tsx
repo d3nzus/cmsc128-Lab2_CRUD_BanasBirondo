@@ -83,7 +83,7 @@ function LoginPage() {
   }
 
   const inputClass =
-    "w-full min-w-0 rounded-md border border-olive-leaf-300 bg-white px-3 py-2.5 text-cyan-950 shadow-sm outline-none focus:border-copperwood-500 focus:ring-2 focus:ring-copperwood-300";
+    "w-full min-w-0 rounded-md border border-olive-leaf-300 bg-white px-3 py-2.5 text-cyan-950 shadow-sm outline-none focus:border-copperwood-700 focus:ring-2 focus:ring-copperwood-300";
 
   return (
     <main className="flex min-h-screen w-full items-center justify-center bg-teal-100 p-4 py-10 inset-shadow-teal-200 inset-shadow-sm sm:p-8">
@@ -148,7 +148,7 @@ function LoginPage() {
                 required
               />
               <button
-                className="absolute inset-y-0 right-0 rounded-r-md px-3 text-sm font-semibold text-cyan-950 hover:bg-olive-leaf-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-copperwood-500"
+                className="absolute inset-y-0 right-0 rounded-r-md px-3 text-sm font-semibold text-cyan-950 hover:bg-olive-leaf-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-copperwood-700"
                 type="button"
                 onClick={() => setShowPassword((visible) => !visible)}
                 aria-pressed={showPassword}
@@ -207,7 +207,7 @@ function LoginPage() {
 
           <div className="flex flex-col-reverse gap-3 border-t border-olive-leaf-500 pt-5 sm:flex-row sm:justify-between">
           <button
-            className="inline-flex min-h-11 items-center justify-center rounded-md bg-black-forest-700 px-5 py-2 font-bold text-white hover:bg-black-forest-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cornsilk-300 disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex min-h-11 items-center justify-center rounded-md bg-cornsilk-300 px-5 py-2 font-bold text-olive-leaf-950 hover:bg-cornsilk-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cornsilk-300 disabled:cursor-not-allowed disabled:opacity-50"
             type="submit"
             disabled={loading}
           >
@@ -218,7 +218,7 @@ function LoginPage() {
                 : "Sign Up"}
           </button>
           <button
-            className="inline-flex min-h-11 items-center justify-center rounded-md bg-copperwood-600 px-5 py-2 font-bold text-white hover:bg-copperwood-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cornsilk-300"
+            className="inline-flex min-h-11 items-center justify-center rounded-md border border-cornsilk-300/70 bg-transparent px-5 py-2 font-bold text-cornsilk-50 hover:bg-olive-leaf-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cornsilk-300"
             type="button"
             onClick={switchMode}
           >

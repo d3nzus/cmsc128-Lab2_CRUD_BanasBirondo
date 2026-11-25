@@ -51,7 +51,7 @@ function TaskToast({
       <div className="flex shrink-0 items-center gap-2">
         {toast.kind === "undo" && (
           <button
-            className="rounded-md bg-cornsilk-300 px-3 py-1.5 text-sm font-bold text-cyan-950 hover:bg-cornsilk-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cornsilk-100"
+            className="rounded-md bg-cornsilk-300 px-3 py-1.5 text-sm font-bold text-olive-leaf-950 hover:bg-cornsilk-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cornsilk-100"
             type="button"
             onClick={() => onUndo(toast.task)}
             aria-label={`Undo delete of ${toast.task.title}`}

@@ -71,7 +71,7 @@ function MyTaskLists({ title = "My Task Lists" }: MyTaskListsProps) {
         <div className="flex flex-wrap items-center gap-3">
           <p>No task lists yet.</p>
           <Link
-            className="inline-flex min-h-11 items-center justify-center rounded-md bg-black-forest-700 px-4 py-2 font-bold text-white hover:bg-black-forest-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cornsilk-300"
+            className="inline-flex min-h-11 items-center justify-center rounded-md bg-olive-leaf-950 px-4 py-2 font-bold text-cornsilk-50 hover:bg-olive-leaf-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-olive-leaf-700"
             to="/addTaskList"
           >
             Create a task list
@@ -84,7 +84,7 @@ function MyTaskLists({ title = "My Task Lists" }: MyTaskListsProps) {
           <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-olive-leaf-700 p-3 text-cyan-50 shadow-xl shadow-teal-600/50 sm:p-4">
             <span>{selected.length} selected</span>
             <button
-              className="rounded bg-red-600 px-4 py-2 font-bold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded bg-red-100 px-4 py-2 font-bold text-red-800 hover:bg-red-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-200 disabled:cursor-not-allowed disabled:opacity-50"
               type="button"
               onClick={handleDelete}
               disabled={selected.length === 0 || deleting}
@@ -109,7 +109,7 @@ function MyTaskLists({ title = "My Task Lists" }: MyTaskListsProps) {
                   >
                     <td className="w-24 p-4 text-center align-middle">
                       <input
-                        className="size-5 accent-black-forest-500"
+                        className="size-5 accent-olive-leaf-950"
                         type="checkbox"
                         aria-label={`Select ${list.name ?? "Untitled list"}`}
                         checked={selected.includes(list.id)}
@@ -118,7 +118,7 @@ function MyTaskLists({ title = "My Task Lists" }: MyTaskListsProps) {
                     </td>
                     <td className={cellClass}>
                     <Link
-                        className="font-semibold text-black-forest-700 underline decoration-black-forest-500/40 underline-offset-2 hover:text-black-forest-950 hover:decoration-black-forest-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black-forest-500"
+                        className="font-semibold text-black-forest-800 underline decoration-black-forest-800/40 underline-offset-2 hover:text-black-forest-950 hover:decoration-black-forest-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black-forest-800"
                         to={`/home?tasklist_id=${list.id}`}
                     >
                         {list.name ?? "Untitled list"}

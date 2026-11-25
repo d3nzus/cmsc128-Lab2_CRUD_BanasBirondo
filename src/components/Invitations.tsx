@@ -88,7 +88,7 @@ function Invitations({ title = "Invitations", onAccepted }: InvitationsProps) {
                   <td className={cellClass}>
                     <div className="flex gap-1">
                       <button
-                        className="w-full rounded bg-black-forest-700 px-2 py-2 font-bold text-white hover:bg-black-forest-900 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="w-full rounded bg-olive-leaf-950 px-2 py-2 font-bold text-cornsilk-50 hover:bg-olive-leaf-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-olive-leaf-700 disabled:cursor-not-allowed disabled:opacity-50"
                         type="button"
                         onClick={() => handleAccept(invite.id)}
                         disabled={busyId !== null}
@@ -97,7 +97,7 @@ function Invitations({ title = "Invitations", onAccepted }: InvitationsProps) {
                         Accept
                       </button>
                       <button
-                        className="w-full rounded bg-red-600 px-2 py-2 font-bold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="w-full rounded bg-red-700 px-2 py-2 font-bold text-white hover:bg-red-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-800 disabled:cursor-not-allowed disabled:opacity-50"
                         type="button"
                         onClick={() => handleDecline(invite.id)}
                         disabled={busyId !== null}

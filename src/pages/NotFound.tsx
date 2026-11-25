@@ -8,7 +8,7 @@ function NotFound() {
         The page you are looking for does not exist or may have moved.
       </p>
       <Link
-        className="inline-flex min-h-11 items-center justify-center rounded-md bg-black-forest-700 px-5 py-2 font-bold text-white hover:bg-black-forest-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cornsilk-300"
+        className="inline-flex min-h-11 items-center justify-center rounded-md bg-olive-leaf-950 px-5 py-2 font-bold text-cornsilk-50 hover:bg-olive-leaf-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-olive-leaf-700"
         to="/home"
       >
         Back to task list

@@ -70,7 +70,7 @@ function TaskTable({ tasks, deletingId, onDelete, onToggleDone }: TaskTableProps
                 >
                   <td className="p-4 text-center align-middle">
                     <button
-                      className={`w-32 rounded px-2 py-2 font-bold text-white shadow-xl/30 shadow-black-forest-800 ${task.done ? "bg-green-700 hover:bg-green-800" : "bg-black-forest-700 hover:bg-black-forest-950"}`}
+                      className={`w-32 rounded px-2 py-2 font-bold ${task.done ? "bg-green-800 text-white hover:bg-green-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-900" : "border border-olive-leaf-700 bg-transparent text-olive-leaf-900 hover:bg-olive-leaf-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-olive-leaf-700"}`}
                       type="button"
                       onClick={() => onToggleDone(task)}
                       aria-pressed={task.done}
@@ -91,7 +91,7 @@ function TaskTable({ tasks, deletingId, onDelete, onToggleDone }: TaskTableProps
                   <td className={cellClass}>
                     <div className="flex gap-1">
                       <button
-                        className="w-full rounded bg-red-600 px-2 py-2 font-bold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+                        className="w-full rounded bg-red-700 px-2 py-2 font-bold text-white hover:bg-red-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-800 disabled:cursor-not-allowed disabled:opacity-60"
                         type="button"
                         onClick={() => onDelete(task)}
                         disabled={deleting}
@@ -101,7 +101,7 @@ function TaskTable({ tasks, deletingId, onDelete, onToggleDone }: TaskTableProps
                         {deleting ? "Deleting..." : "Delete"}
                       </button>
                       <Link
-                        className="inline-flex w-full justify-center rounded bg-black-forest-700 px-2 py-2 font-bold text-white hover:bg-black-forest-900"
+                        className="inline-flex w-full justify-center rounded bg-olive-leaf-950 px-2 py-2 font-bold text-cornsilk-50 hover:bg-olive-leaf-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-olive-leaf-700"
                         to={`/editForm?task_id=${task.id}&tasklist_id=${task.tasklist_id}`}
                         aria-label={`Edit ${task.title}`}
                       >

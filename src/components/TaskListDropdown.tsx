@@ -16,7 +16,7 @@ function TaskListDropdown({
     <div className="mb-5 flex flex-wrap items-center gap-3">
       {taskLists.length > 0 && (
         <select
-          className="w-fit max-w-full rounded-md border border-teal-100 bg-teal-100 px-3 py-2 text-2xl font-bold text-cyan-950 shadow-sm focus:outline-2 focus:outline-offset-2 focus:outline-olive-leaf-600 sm:text-3xl"
+          className="w-fit max-w-full rounded-md border border-olive-leaf-700 bg-white px-3 py-2 text-2xl font-bold text-cyan-950 shadow-sm focus:outline-2 focus:outline-offset-2 focus:outline-olive-leaf-700 sm:text-3xl"
           id="tasklist-select"
           aria-label="Task list"
           value={selectedTaskListId ?? ""}
@@ -43,7 +43,7 @@ function TaskListDropdown({
       )}
 
       <Link
-        className="inline-flex min-h-11 items-center justify-center rounded-md bg-black-forest-700 px-4 py-2 font-bold text-white hover:bg-black-forest-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cornsilk-300"
+        className="inline-flex min-h-11 items-center justify-center rounded-md bg-olive-leaf-950 px-4 py-2 font-bold text-cornsilk-50 hover:bg-olive-leaf-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-olive-leaf-700"
         to="/addTaskList"
       >
         + New task list

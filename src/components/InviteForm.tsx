@@ -40,7 +40,7 @@ function InviteForm({ taskListId }: { taskListId: number | null }) {
         required
       />
       <button
-        className="rounded bg-black-forest-700 px-4 py-2 font-bold text-white hover:bg-black-forest-900 disabled:cursor-not-allowed disabled:opacity-50"
+        className="rounded bg-cornsilk-300 px-4 py-2 font-bold text-olive-leaf-950 hover:bg-cornsilk-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cornsilk-300 disabled:cursor-not-allowed disabled:opacity-50"
         type="submit"
         disabled={sending || taskListId === null}
       >
