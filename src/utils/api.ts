@@ -135,9 +135,10 @@ export async function deleteTask(taskId: number): Promise<void> {
   if (!data) throw new Error(`Task ${taskId} was not deleted. It may be unavailable or your DELETE policy denied access.`);
 }
 
-// Puts a task back after an undone delete. Prefer the original id so links and
-// sorting stay stable, but fall back to a generated id when the column does not
-// accept explicit values.
+// Puts a task back after an undone delete. The id column is
+// GENERATED ALWAYS AS IDENTITY, so the restored row receives a new id and
+// callers must use the returned task rather than the one passed in. The
+// generated Insert type marks id as optional, but Postgres rejects it here.
 export async function restoreTask(task: Task): Promise<Task> {
   const row: TaskInsert = {
     title: task.title,
@@ -149,19 +150,11 @@ export async function restoreTask(task: Task): Promise<Task> {
     done: task.done,
   };
 
-  let { data, error } = await supabase
+  const { data, error } = await supabase
     .from("task")
-    .insert({ ...row, id: task.id })
+    .insert(row)
     .select("id")
     .single();
-
-  if (error) {
-    ({ data, error } = await supabase
-      .from("task")
-      .insert(row)
-      .select("id")
-      .single());
-  }
 
   if (error) throw error;
   if (!data) throw new Error("No task row was restored.");
