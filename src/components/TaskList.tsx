@@ -43,7 +43,7 @@ function TaskToast({
     <div
       ref={toastRef}
       role={isError ? "alert" : "status"}
-      className="fixed inset-x-4 bottom-4 z-50 mx-auto flex max-w-md items-center justify-between gap-3 rounded-lg bg-olive-leaf-950 px-4 py-3 text-cornsilk-100 shadow-xl sm:inset-x-auto sm:right-6 sm:left-auto"
+      className="group fixed inset-x-4 bottom-4 z-50 mx-auto flex max-w-md items-center justify-between gap-3 overflow-hidden rounded-lg bg-olive-leaf-950 px-4 py-3 text-cornsilk-100 shadow-xl sm:inset-x-auto sm:right-6 sm:left-auto"
     >
       <p className="min-w-0 text-sm">
         {toast.kind === "undo" ? `Deleted "${toast.task.title}".` : toast.text}
@@ -67,6 +67,14 @@ function TaskToast({
           Dismiss
         </button>
       </div>
+      {toast.kind === "undo" && (
+        <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1 bg-cornsilk-100/20">
+          <div
+            className="h-full origin-left bg-cornsilk-300 group-focus-within:[animation-play-state:paused]"
+            style={{ animation: `undo-countdown ${undoWindowMs}ms linear forwards` }}
+          />
+        </div>
+      )}
     </div>
   );
 }
@@ -140,10 +148,24 @@ function TaskList() {
     setActionError("");
     setDeletingId(task.id);
 
+    // If the row's Delete button had focus, removing the row would drop focus
+    // to <body>; the undo toast takes it instead.
+    const focusWasOnDelete =
+      document.activeElement instanceof HTMLElement &&
+      document.activeElement.dataset.taskDelete === String(task.id);
+
     try {
       await deleteTask(task.id);
       setTasks((current) => current.filter((item) => item.id !== task.id));
+      // Single undo slot: a new delete replaces the previous toast, so only the
+      // most recent delete can be undone.
       setToast({ kind: "undo", task });
+
+      if (focusWasOnDelete) {
+        requestAnimationFrame(() => {
+          toastRef.current?.querySelector<HTMLButtonElement>("button")?.focus();
+        });
+      }
     } catch (error) {
       setActionError(`Could not delete "${task.title}": ${errorText(error)}`);
     } finally {
@@ -216,13 +238,18 @@ function TaskList() {
       {loadError && <p className="text-red-800" role="alert">{loadError}</p>}
       {actionError && <p className="text-red-800" role="alert">{actionError}</p>}
       {!loadingLists && !loadingTasks && !loadError && tasks.length === 0 && (
-        <p>{selectedTaskListId ? "No tasks in this task list yet." : "Create or select a task list to get started."}</p>
+        <p>
+          {selectedTaskListId
+            ? "No tasks in this task list yet."
+            : "You don't have a task list yet. Use \"+ New task list\" above to create one."}
+        </p>
       )}
 
-      <InviteForm taskListId={selectedTaskListId} />
+      {selectedTaskListId !== null && <InviteForm taskListId={selectedTaskListId} />}
 
       {toast && (
         <TaskToast
+          key={toast.kind === "undo" ? `undo-${toast.task.id}` : `message-${toast.text}`}
           toast={toast}
           onUndo={(task) => void handleUndoDelete(task)}
           onDismiss={() => setToast(null)}

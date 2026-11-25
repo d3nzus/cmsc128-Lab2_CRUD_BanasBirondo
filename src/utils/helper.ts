@@ -56,13 +56,13 @@ export function sortTasks(tasks: Task[], orderBy: SortKey, direction: Direction)
 export function getPriorityClass(priority: string | null) {
   switch (priority?.toLowerCase()) {
     case "high":
-      return "bg-red-600/70 text-white";
+      return "bg-priority-high text-white";
     case "mid":
     case "medium":
-      return "bg-orange-500/70 text-white";
+      return "bg-priority-mid text-white";
     case "low":
     case "lo":
-      return "bg-yellow-300/70 text-black";
+      return "bg-priority-low text-black";
     default:
       return "";
   }

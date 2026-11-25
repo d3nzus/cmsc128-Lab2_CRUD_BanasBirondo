@@ -5,6 +5,7 @@ import EditForm from "../pages/EditForm";
 import LoginPage from "../pages/LoginPage";
 import AddTaskList from "../pages/AddTaskList";
 import Profile from "../pages/Profile";
+import ResetPasswordPage from "../pages/ResetPasswordPage";
 import NotFound from "../pages/NotFound";
 import { createBrowserRouter, redirect } from "react-router-dom";
 import { getCurrentUser } from "../utils/userAuth";
@@ -57,6 +58,10 @@ const router = createBrowserRouter([
         path: "/login",
         element: <LoginPage/>,
         loader: requireGuest,
+      },
+      {
+        path: "/resetPassword",
+        element: <ResetPasswordPage/>,
       },
       {
         path: "*",

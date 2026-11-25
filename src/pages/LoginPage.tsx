@@ -1,31 +1,42 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { signInWithEmail, signUpWithEmail } from "../utils/userAuth";
- 
+import { requestPasswordReset, signInWithEmail, signUpWithEmail } from "../utils/userAuth";
+
 function LoginPage() {
   const navigate = useNavigate();
- 
+
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [resetting, setResetting] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [username, setUsername] = useState("");
- 
+
   function switchMode() {
     setMode(mode === "login" ? "signup" : "login");
     setError("");
     setMessage("");
     setUsername("");
+    setConfirmPassword("");
+    setShowPassword(false);
   }
- 
+
   async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault(); // stops the page from reloading
-    setLoading(true);
     setError("");
     setMessage("");
- 
+
+    if (mode === "signup" && password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    setLoading(true);
+
     const authError =
       mode === "signup"
         ? await signUpWithEmail(email, password, username)
@@ -42,13 +53,38 @@ function LoginPage() {
       setMessage("Check your email and click the link to confirm your account.");
       //clear fields on successful signup
       setPassword("");
+      setConfirmPassword("");
       setUsername("");
       return;
     }
 
     navigate("/home"); // go to the task list
   }
- 
+
+  async function handleForgotPassword() {
+    setError("");
+    setMessage("");
+
+    if (!email.trim()) {
+      setError("Enter your email address first, then choose Forgot password.");
+      return;
+    }
+
+    setResetting(true);
+    const resetError = await requestPasswordReset(email);
+    setResetting(false);
+
+    if (resetError) {
+      setError(resetError);
+      return;
+    }
+
+    setMessage("If an account exists for that email, a password reset link is on its way.");
+  }
+
+  const inputClass =
+    "w-full min-w-0 rounded-md border border-olive-leaf-300 bg-white px-3 py-2.5 text-cyan-950 shadow-sm outline-none focus:border-copperwood-500 focus:ring-2 focus:ring-copperwood-300";
+
   return (
     <main className="flex min-h-screen w-full items-center justify-center bg-teal-100 p-4 py-10 inset-shadow-teal-200 inset-shadow-sm sm:p-8">
       <section
@@ -66,7 +102,7 @@ function LoginPage() {
                 Username
               </label>
               <input
-                className="w-full min-w-0 rounded-md border border-olive-leaf-300 bg-white px-3 py-2.5 text-cyan-950 shadow-sm outline-none focus:border-copperwood-500 focus:ring-2 focus:ring-copperwood-300"
+                className={inputClass}
                 id="username"
                 type="text"
                 value={username}
@@ -83,7 +119,7 @@ function LoginPage() {
               Email
             </label>
             <input
-              className="w-full min-w-0 rounded-md border border-olive-leaf-300 bg-white px-3 py-2.5 text-cyan-950 shadow-sm outline-none focus:border-copperwood-500 focus:ring-2 focus:ring-copperwood-300"
+              className={inputClass}
               id="email"
               type="email"
               value={email}
@@ -97,19 +133,66 @@ function LoginPage() {
             <label className="mb-1.5 block text-sm font-semibold" htmlFor="password">
               Password
             </label>
-            <input
-              className="w-full min-w-0 rounded-md border border-olive-leaf-300 bg-white px-3 py-2.5 text-cyan-950 shadow-sm outline-none focus:border-copperwood-500 focus:ring-2 focus:ring-copperwood-300"
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete={
-                mode === "login" ? "current-password" : "new-password"
-              }
-              minLength={6}
-              required
-            />
+            <div className="relative">
+              <input
+                className={`${inputClass} pr-16`}
+                id="password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete={
+                  mode === "login" ? "current-password" : "new-password"
+                }
+                aria-describedby={mode === "signup" ? "password-hint" : undefined}
+                minLength={6}
+                required
+              />
+              <button
+                className="absolute inset-y-0 right-0 rounded-r-md px-3 text-sm font-semibold text-cyan-950 hover:bg-olive-leaf-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-copperwood-500"
+                type="button"
+                onClick={() => setShowPassword((visible) => !visible)}
+                aria-pressed={showPassword}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
+            {mode === "signup" && (
+              <p id="password-hint" className="mt-1 text-xs text-cornsilk-100">
+                At least 6 characters.
+              </p>
+            )}
+            {mode === "login" && (
+              <div className="mt-1 flex justify-end">
+                <button
+                  className="text-sm font-semibold text-cornsilk-100 underline underline-offset-2 hover:text-white disabled:opacity-50"
+                  type="button"
+                  onClick={() => void handleForgotPassword()}
+                  disabled={resetting}
+                >
+                  {resetting ? "Sending..." : "Forgot password?"}
+                </button>
+              </div>
+            )}
           </div>
+
+          {mode === "signup" && (
+            <div>
+              <label className="mb-1.5 block text-sm font-semibold" htmlFor="confirm-password">
+                Confirm password
+              </label>
+              <input
+                className={inputClass}
+                id="confirm-password"
+                type={showPassword ? "text" : "password"}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                autoComplete="new-password"
+                minLength={6}
+                required
+              />
+            </div>
+          )}
 
           {error && (
             <p className="rounded-md border border-red-300/50 bg-red-950/30 p-3 text-sm text-red-100" role="alert">
@@ -124,7 +207,7 @@ function LoginPage() {
 
           <div className="flex flex-col-reverse gap-3 border-t border-olive-leaf-500 pt-5 sm:flex-row sm:justify-between">
           <button
-            className="inline-flex min-h-11 items-center justify-center rounded-md bg-black-forest-500 px-5 py-2 font-bold text-white hover:bg-black-forest-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cornsilk-300 disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex min-h-11 items-center justify-center rounded-md bg-black-forest-700 px-5 py-2 font-bold text-white hover:bg-black-forest-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cornsilk-300 disabled:cursor-not-allowed disabled:opacity-50"
             type="submit"
             disabled={loading}
           >
@@ -139,7 +222,7 @@ function LoginPage() {
             type="button"
             onClick={switchMode}
           >
-            {mode === "login" ? "Need an account?" : "Have an account?"}
+            {mode === "login" ? "Create account" : "Log in"}
           </button>
           </div>
         </form>
@@ -147,6 +230,5 @@ function LoginPage() {
     </main>
   );
 }
- 
+
 export default LoginPage;
- 
