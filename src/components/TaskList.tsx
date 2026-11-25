@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import type { Task } from "../types/types.ts";
 import {
   deleteTask,
@@ -216,19 +216,11 @@ function TaskList() {
       {loadError && <p className="text-red-800" role="alert">{loadError}</p>}
       {actionError && <p className="text-red-800" role="alert">{actionError}</p>}
       {!loadingLists && !loadingTasks && !loadError && tasks.length === 0 && (
-        selectedTaskListId ? (
-          <p>No tasks in this task list yet.</p>
-        ) : (
-          <div className="flex flex-wrap items-center gap-3">
-            <p>You don't have a task list yet.</p>
-            <Link
-              className="inline-flex min-h-11 items-center justify-center rounded-md bg-black-forest-700 px-4 py-2 font-bold text-white hover:bg-black-forest-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cornsilk-300"
-              to="/addTaskList"
-            >
-              Create your first task list
-            </Link>
-          </div>
-        )
+        <p>
+          {selectedTaskListId
+            ? "No tasks in this task list yet."
+            : "You don't have a task list yet. Use \"+ New task list\" above to create one."}
+        </p>
       )}
 
       {selectedTaskListId !== null && <InviteForm taskListId={selectedTaskListId} />}
