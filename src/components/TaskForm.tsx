@@ -124,7 +124,7 @@ function TaskForm({
                 {priorityOptions.map((option) => (
                   <label
                     key={option.value}
-                    className={`flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2.5 text-sm ${values.priority === option.value ? "border-cornsilk-300 bg-olive-leaf-600" : "border-olive-leaf-300 bg-olive-leaf-800 hover:bg-olive-leaf-900"}`}
+                    className={`flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2.5 text-sm ${values.priority === option.value ? "border-cornsilk-300 bg-olive-leaf-700" : "border-olive-leaf-300 bg-olive-leaf-800 hover:bg-olive-leaf-900"}`}
                   >
                     <input
                       className="accent-cornsilk-300"
@@ -169,7 +169,7 @@ function TaskForm({
               Cancel
             </Link>
             <button
-              className="inline-flex min-h-11 items-center justify-center rounded-md bg-black-forest-500 px-5 py-2 font-bold text-white hover:bg-black-forest-600 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex min-h-11 items-center justify-center rounded-md bg-black-forest-700 px-5 py-2 font-bold text-white hover:bg-black-forest-900 disabled:cursor-not-allowed disabled:opacity-50"
               type="submit"
               disabled={saving}
             >

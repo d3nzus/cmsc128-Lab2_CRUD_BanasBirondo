@@ -15,7 +15,7 @@ function Invitations({ title = "Invitations", onAccepted }: InvitationsProps) {
   const [error, setError] = useState("");
 
   const cellClass = "p-3 sm:p-4";
-  const headerClass = "bg-olive-leaf-600 p-3 text-cyan-50 sm:p-4";
+  const headerClass = "bg-olive-leaf-700 p-3 text-cyan-50 sm:p-4";
 
   async function loadInvites() {
     try {
@@ -87,7 +87,7 @@ function Invitations({ title = "Invitations", onAccepted }: InvitationsProps) {
                   <td className={cellClass}>
                     <div className="flex gap-1">
                       <button
-                        className="w-full rounded bg-black-forest-500 px-2 py-2 font-bold text-white hover:bg-black-forest-700 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="w-full rounded bg-black-forest-700 px-2 py-2 font-bold text-white hover:bg-black-forest-900 disabled:cursor-not-allowed disabled:opacity-50"
                         type="button"
                         onClick={() => handleAccept(invite.id)}
                         disabled={busyId !== null}

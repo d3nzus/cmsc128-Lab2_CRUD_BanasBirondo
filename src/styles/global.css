@@ -61,4 +61,10 @@
     --color-copperwood-900: oklch(23.08% 0.040 59.03);
     --color-copperwood-950: oklch(19.23% 0.030 61.27);
 
+    /* Priority badges: >= 4.5:1 against their text colour. Kept separate from
+       the destructive red used by Delete so the two do not compete. */
+    --color-priority-high: oklch(0.46 0.16 25);
+    --color-priority-mid: oklch(0.50 0.14 65);
+    --color-priority-low: oklch(0.88 0.13 95);
+
 }

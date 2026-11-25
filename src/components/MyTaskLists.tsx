@@ -17,7 +17,7 @@ function MyTaskLists({ title = "My Task Lists" }: MyTaskListsProps) {
   const [error, setError] = useState("");
 
   const cellClass = "p-3 sm:p-4";
-  const headerClass = "bg-olive-leaf-600 p-3 text-cyan-50 sm:p-4";
+  const headerClass = "bg-olive-leaf-700 p-3 text-cyan-50 sm:p-4";
 
   async function loadLists() {
     try {
@@ -81,7 +81,7 @@ function MyTaskLists({ title = "My Task Lists" }: MyTaskListsProps) {
 
       {lists.length > 0 && (
         <main className="flex flex-col gap-3">
-          <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-olive-leaf-600 p-3 text-cyan-50 shadow-xl shadow-teal-600/50 sm:p-4">
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-olive-leaf-700 p-3 text-cyan-50 shadow-xl shadow-teal-600/50 sm:p-4">
             <span>{selected.length} selected</span>
             <button
               className="rounded bg-red-600 px-4 py-2 font-bold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
