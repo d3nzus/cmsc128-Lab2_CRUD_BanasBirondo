@@ -67,6 +67,8 @@ The project can also be accessed using the [deployment](https://demonicduo128lab
 | `category` | `id`, `name` |
 | `task` | `id`, `title`, `due_date`, `due_time`, `priority`, `done`, `category_id` (FK → `category.id`) |
 
+> `task.category_id` is required, so the `category` table must contain at least one row before tasks can be created. The app shows guidance when it is empty but does not manage categories.
+
 ## CRUD Operations
 
 | Operation | Description |
