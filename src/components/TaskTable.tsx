@@ -19,7 +19,7 @@ function TaskTable({ tasks, deletingId, onDelete, onToggleDone }: TaskTableProps
 
   return (
     <>
-      <form className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-lg bg-olive-leaf-700 p-3 text-cyan-50 shadow-xl shadow-teal-600/50 sm:p-4">
+      <form className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-lg bg-olive-leaf-700 p-3 text-cyan-50 shadow-sm shadow-teal-600/50 sm:p-4">
         <label htmlFor="order">Order By:</label>
         <select
           className="min-w-0 rounded-md border-0 bg-cornsilk-300 px-2 py-1.5 text-cyan-950"
@@ -46,7 +46,7 @@ function TaskTable({ tasks, deletingId, onDelete, onToggleDone }: TaskTableProps
         </select>
       </form>
 
-      <div className="w-full max-w-full overflow-x-auto rounded-xl shadow-xl shadow-teal-600/50">
+      <div className="w-full max-w-full overflow-x-auto rounded-xl shadow-sm shadow-teal-600/50">
         <table className="w-full min-w-[900px] border-collapse text-cyan-950">
           <caption className="sr-only">Tasks in the selected task list</caption>
           <thead>
@@ -70,7 +70,7 @@ function TaskTable({ tasks, deletingId, onDelete, onToggleDone }: TaskTableProps
                 >
                   <td className="p-4 text-center align-middle">
                     <button
-                      className={`w-32 rounded px-2 py-2 font-bold text-white shadow-xl/30 shadow-black-forest-800 ${task.done ? "bg-green-700 hover:bg-green-800" : "bg-black-forest-700 hover:bg-black-forest-950"}`}
+                      className={`w-32 rounded px-2 py-2 font-bold text-white shadow-sm/30 shadow-black-forest-800 ${task.done ? "bg-green-700 hover:bg-green-800" : "bg-black-forest-700 hover:bg-black-forest-950"}`}
                       type="button"
                       onClick={() => onToggleDone(task)}
                       aria-pressed={task.done}
