@@ -25,7 +25,7 @@ function SignOutButton() {
   return (
     <div className="flex flex-col items-end gap-1">
       <button
-        className="rounded bg-copperwood-700 px-4 py-2 font-bold text-white hover:bg-copperwood-800 disabled:opacity-50"
+        className="inline-flex min-h-11 items-center justify-center rounded bg-copperwood-700 px-3 py-2 text-sm font-bold text-white hover:bg-copperwood-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-olive-leaf-700 disabled:opacity-50 sm:px-4 sm:text-base"
         type="button"
         onClick={() => void handleSignOut()}
         disabled={signingOut}
@@ -33,7 +33,7 @@ function SignOutButton() {
         {signingOut ? "Signing out..." : "Sign Out"}
       </button>
       {error && (
-        <p className="max-w-56 text-right text-xs text-red-700" role="alert">
+        <p className="max-w-40 text-right text-xs text-red-700 sm:max-w-56" role="alert">
           Could not sign out: {error}
         </p>
       )}

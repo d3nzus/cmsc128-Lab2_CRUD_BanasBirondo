@@ -83,7 +83,7 @@ function TaskForm({
                 Title
               </label>
               <input
-                className="w-full min-w-0 rounded-md border border-olive-leaf-300 bg-white px-3 py-2.5 text-cyan-950 shadow-sm outline-none focus:border-copperwood-500 focus:ring-2 focus:ring-copperwood-300"
+                className="w-full min-w-0 rounded-md border border-olive-leaf-300 bg-white px-3 py-2.5 text-cyan-950 shadow-sm outline-none focus:border-copperwood-700 focus:ring-2 focus:ring-copperwood-300"
                 id="task-title"
                 value={values.title}
                 onChange={(event) => updateValue("title", event.target.value)}
@@ -96,7 +96,7 @@ function TaskForm({
                 Date
               </label>
               <input
-                className="w-full min-w-0 rounded-md border border-olive-leaf-300 bg-white px-3 py-2.5 text-cyan-950 shadow-sm outline-none focus:border-copperwood-500 focus:ring-2 focus:ring-copperwood-300"
+                className="w-full min-w-0 rounded-md border border-olive-leaf-300 bg-white px-3 py-2.5 text-cyan-950 shadow-sm outline-none focus:border-copperwood-700 focus:ring-2 focus:ring-copperwood-300"
                 id="task-date"
                 type="date"
                 value={values.date}
@@ -110,7 +110,7 @@ function TaskForm({
                 Time
               </label>
               <input
-                className="w-full min-w-0 rounded-md border border-olive-leaf-300 bg-white px-3 py-2.5 text-cyan-950 shadow-sm outline-none focus:border-copperwood-500 focus:ring-2 focus:ring-copperwood-300"
+                className="w-full min-w-0 rounded-md border border-olive-leaf-300 bg-white px-3 py-2.5 text-cyan-950 shadow-sm outline-none focus:border-copperwood-700 focus:ring-2 focus:ring-copperwood-300"
                 id="task-time"
                 type="time"
                 value={values.time}
@@ -125,7 +125,7 @@ function TaskForm({
                 {priorityOptions.map((option) => (
                   <label
                     key={option.value}
-                    className={`flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2.5 text-sm ${values.priority === option.value ? "border-cornsilk-300 bg-olive-leaf-600" : "border-olive-leaf-300 bg-olive-leaf-800 hover:bg-olive-leaf-900"}`}
+                    className={`flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2.5 text-sm ${values.priority === option.value ? "border-cornsilk-300 bg-olive-leaf-900" : "border-olive-leaf-300 bg-transparent hover:bg-olive-leaf-800"}`}
                   >
                     <input
                       className="accent-cornsilk-300"
@@ -146,7 +146,7 @@ function TaskForm({
                 Category
               </label>
               <select
-                className="w-full min-w-0 rounded-md border border-olive-leaf-300 bg-white px-3 py-2.5 text-cyan-950 shadow-sm outline-none focus:border-copperwood-500 focus:ring-2 focus:ring-copperwood-300"
+                className="w-full min-w-0 rounded-md border border-olive-leaf-300 bg-white px-3 py-2.5 text-cyan-950 shadow-sm outline-none focus:border-copperwood-700 focus:ring-2 focus:ring-copperwood-300"
                 id="task-category"
                 value={values.categoryId}
                 onChange={(event) => updateValue("categoryId", event.target.value)}
@@ -164,7 +164,7 @@ function TaskForm({
 
           <div className="flex flex-col-reverse gap-3 border-t border-olive-leaf-500 pt-5 sm:flex-row sm:justify-end">
             <Link
-              className="inline-flex min-h-11 items-center justify-center rounded-md bg-copperwood-600 px-5 py-2 font-bold text-white hover:bg-copperwood-700"
+              className="inline-flex min-h-11 items-center justify-center rounded-md border border-cornsilk-300/70 bg-transparent px-5 py-2 font-bold text-cornsilk-50 hover:bg-olive-leaf-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cornsilk-300"
               to="#" onClick={(e) => {
                 e.preventDefault();
                 navigate(-1);
@@ -173,7 +173,7 @@ function TaskForm({
               Cancel
             </Link>
             <button
-              className="inline-flex min-h-11 items-center justify-center rounded-md bg-black-forest-500 px-5 py-2 font-bold text-white hover:bg-black-forest-600 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex min-h-11 items-center justify-center rounded-md bg-cornsilk-300 px-5 py-2 font-bold text-olive-leaf-950 hover:bg-cornsilk-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cornsilk-300 disabled:cursor-not-allowed disabled:opacity-50"
               type="submit"
               disabled={saving}
             >
