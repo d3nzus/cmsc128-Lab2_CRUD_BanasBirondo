@@ -6,6 +6,7 @@ export type Task = {
   due_time: string;
   priority: string | null;
   category: { name: string } | null;
+  category_id: number;
   done: boolean;
 };
 

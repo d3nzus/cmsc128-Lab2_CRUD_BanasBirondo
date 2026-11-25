@@ -1,19 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import { useBlocker, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import type { Task } from "../types/types.ts";
 import {
-  deleteTasks,
+  deleteTask,
   getTaskLists,
   getTasksForList,
+  restoreTask,
   toggleTaskDone,
   type UserTaskList,
 } from "../utils/api.ts";
-import {
-  clearPendingDeleteIds,
-  queuePendingDelete,
-  readPendingDeleteIds,
-  undoPendingDelete,
-} from "../utils/helper.ts";
 import { Link } from "react-router-dom";
 import { getCurrentUser } from "../utils/userAuth.ts";
 import AddTask from "./AddTask.tsx";
@@ -21,25 +16,76 @@ import TaskListDropdown from "./TaskListDropdown.tsx";
 import TaskTable from "./TaskTable.tsx";
 import InviteForm from "./InviteForm.tsx";
 
+type Toast =
+  | { kind: "undo"; task: Task }
+  | { kind: "message"; tone: "success" | "error"; text: string };
+
+const undoWindowMs = 8000;
+const messageDurationMs = 5000;
+
 function errorText(error: unknown) {
   return error instanceof Error ? error.message : String(error);
+}
+
+function TaskToast({
+  toast,
+  onUndo,
+  onDismiss,
+  toastRef,
+}: {
+  toast: Toast;
+  onUndo: (task: Task) => void;
+  onDismiss: () => void;
+  toastRef: React.RefObject<HTMLDivElement | null>;
+}) {
+  const isError = toast.kind === "message" && toast.tone === "error";
+
+  return (
+    <div
+      ref={toastRef}
+      role={isError ? "alert" : "status"}
+      className="fixed inset-x-4 bottom-4 z-50 mx-auto flex max-w-md items-center justify-between gap-3 rounded-lg bg-olive-leaf-950 px-4 py-3 text-cornsilk-100 shadow-xl sm:inset-x-auto sm:right-6 sm:left-auto"
+    >
+      <p className="min-w-0 text-sm">
+        {toast.kind === "undo" ? `Deleted "${toast.task.title}".` : toast.text}
+      </p>
+      <div className="flex shrink-0 items-center gap-2">
+        {toast.kind === "undo" && (
+          <button
+            className="rounded-md bg-cornsilk-300 px-3 py-1.5 text-sm font-bold text-cyan-950 hover:bg-cornsilk-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cornsilk-100"
+            type="button"
+            onClick={() => onUndo(toast.task)}
+            aria-label={`Undo delete of ${toast.task.title}`}
+          >
+            Undo
+          </button>
+        )}
+        <button
+          className="rounded-md px-2 py-1.5 text-sm font-semibold text-cornsilk-200 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cornsilk-100"
+          type="button"
+          onClick={onDismiss}
+        >
+          Dismiss
+        </button>
+      </div>
+    </div>
+  );
 }
 
 function TaskList() {
   const [searchParams] = useSearchParams();
   const requestedTaskListId = searchParams.get("tasklist_id");
-  const [userId, setUserId] = useState<string | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [taskLists, setTaskLists] = useState<UserTaskList[]>([]);
   const [selectedTaskListId, setSelectedTaskListId] = useState<number | null>(null);
-  const [pendingDeleteIds, setPendingDeleteIds] = useState<Set<number>>(new Set());
+  const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [toast, setToast] = useState<Toast | null>(null);
   const [loadingLists, setLoadingLists] = useState(true);
   const [loadingTasks, setLoadingTasks] = useState(false);
   const [loadError, setLoadError] = useState("");
   const [actionError, setActionError] = useState("");
   const initialized = useRef(false);
-  const navigationCommitInProgress = useRef(false);
-  const blocker = useBlocker(pendingDeleteIds.size > 0);
+  const toastRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (initialized.current) return;
@@ -49,17 +95,6 @@ function TaskList() {
       try {
         const user = await getCurrentUser();
         if (!user) throw new Error("Please sign in to view task lists.");
-        setUserId(user.id);
-
-        const queuedIds = readPendingDeleteIds(user.id);
-        clearPendingDeleteIds(user.id);
-        if (queuedIds.length > 0) {
-          try {
-            await deleteTasks(queuedIds);
-          } catch (error) {
-            setActionError(`Could not finish pending deletes: ${errorText(error)}`);
-          }
-        }
 
         const lists = await getTaskLists(user.id);
         setTaskLists(lists);
@@ -102,14 +137,36 @@ function TaskList() {
     };
   }, [selectedTaskListId]);
 
-  function handleDelete(taskId: number) {
-    if (!userId) return;
-    setPendingDeleteIds((current) => queuePendingDelete(current, taskId, userId));
+  async function handleDelete(task: Task) {
+    setActionError("");
+    setDeletingId(task.id);
+
+    try {
+      await deleteTask(task.id);
+      setTasks((current) => current.filter((item) => item.id !== task.id));
+      setToast({ kind: "undo", task });
+    } catch (error) {
+      setActionError(`Could not delete "${task.title}": ${errorText(error)}`);
+    } finally {
+      setDeletingId(null);
+    }
   }
 
-  function handleUndoDelete(taskId: number) {
-    if (!userId) return;
-    setPendingDeleteIds((current) => undoPendingDelete(current, taskId, userId));
+  async function handleUndoDelete(task: Task) {
+    setToast(null);
+    setActionError("");
+
+    try {
+      const restored = await restoreTask(task);
+      setTasks((current) => [...current, restored]);
+      setToast({
+        kind: "message",
+        tone: "success",
+        text: `Restored "${task.title}".`,
+      });
+    } catch (error) {
+      setActionError(`Could not restore "${task.title}": ${errorText(error)}`);
+    }
   }
 
   async function handleToggleDone(task: Task) {
@@ -123,23 +180,18 @@ function TaskList() {
     }
   }
 
+  // Auto-dismiss the toast, but leave it up while the user is focused on it so
+  // the Undo button cannot disappear mid-interaction.
   useEffect(() => {
-    if (blocker.state !== "blocked" || navigationCommitInProgress.current) return;
+    if (!toast) return;
 
-    navigationCommitInProgress.current = true;
-    const taskIds = [...pendingDeleteIds];
-    if (userId) clearPendingDeleteIds(userId);
+    const timeout = setTimeout(() => {
+      if (toastRef.current?.contains(document.activeElement)) return;
+      setToast(null);
+    }, toast.kind === "undo" ? undoWindowMs : messageDurationMs);
 
-    void deleteTasks(taskIds)
-      .catch((error: unknown) => {
-        setActionError(`Could not delete tasks: ${errorText(error)}`);
-      })
-      .finally(() => {
-        setPendingDeleteIds(new Set());
-        navigationCommitInProgress.current = false;
-        if (blocker.state === "blocked") blocker.proceed();
-      });
-  }, [blocker, pendingDeleteIds, userId]);
+    return () => clearTimeout(timeout);
+  }, [toast]);
 
   return (
     <div className="w-full min-w-0 space-y-4 text-cyan-950">
@@ -163,9 +215,8 @@ function TaskList() {
         </div>
         <TaskTable
           tasks={tasks}
-          pendingDeleteIds={pendingDeleteIds}
-          onDelete={handleDelete}
-          onUndoDelete={handleUndoDelete}
+          deletingId={deletingId}
+          onDelete={(task) => void handleDelete(task)}
           onToggleDone={(task) => void handleToggleDone(task)}
         />
       </div>
@@ -178,6 +229,15 @@ function TaskList() {
       )}
 
       <InviteForm taskListId={selectedTaskListId} />
+
+      {toast && (
+        <TaskToast
+          toast={toast}
+          onUndo={(task) => void handleUndoDelete(task)}
+          onDismiss={() => setToast(null)}
+          toastRef={toastRef}
+        />
+      )}
     </div>
   );
 }

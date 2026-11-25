@@ -170,12 +170,20 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      accept_invite: {
+        Args: { invite_id: number }
+        Returns: undefined
+      }
       create_tasklist_with_owner: {
         Args: { list_name: string }
         Returns: {
           id: number
           name: string
         }[]
+      }
+      decline_invite: {
+        Args: { invite_id: number }
+        Returns: undefined
       }
       get_my_invites: {
         Args: never
