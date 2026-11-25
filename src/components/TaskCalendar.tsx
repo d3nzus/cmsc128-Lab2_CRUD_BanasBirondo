@@ -114,7 +114,7 @@ function TaskCalendar({ tasks }: TaskCalendarProps) {
                 {dayTasks.slice(0, 2).map((task) => (
                   <span
                     key={task.id}
-                    className={`block truncate rounded px-1 text-xs ${getPriorityClass(task.priority) || "bg-white/70 text-cyan-950"} ${
+                    className={`block truncate rounded-full px-1 pb-1 pt-1 text-xs ${getPriorityClass(task.priority) || "bg-white/70 text-cyan-950"} ${
                       task.done ? "line-through opacity-60" : ""
                     }`}
                   >
