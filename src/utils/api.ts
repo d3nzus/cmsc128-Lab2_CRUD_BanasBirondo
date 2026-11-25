@@ -1,7 +1,10 @@
 import { supabase } from "../../supabase/supabase.ts";
+import type { Database } from "../../supabase/database.types.ts";
 import type { createTaskPayload } from "./helper.ts";
 import { getCurrentUser } from "./userAuth.ts";
 import type { CategoryOption, Task } from "../types/types.ts";
+
+type TaskInsert = Database["public"]["Tables"]["task"]["Insert"];
 
 export type UserTaskList = { id: number; name: string | null };
 export type EditableTask = Pick<
@@ -47,6 +50,7 @@ export async function getTasksForList(taskListId: number): Promise<Task[]> {
     due_time,
     priority,
     category:category_id ( name ),
+    category_id,
     done
   `).eq("tasklist_id", taskListId);
   if (error) throw error;
@@ -129,6 +133,40 @@ export async function deleteTask(taskId: number): Promise<void> {
     .maybeSingle();
   if (error) throw error;
   if (!data) throw new Error(`Task ${taskId} was not deleted. It may be unavailable or your DELETE policy denied access.`);
+}
+
+// Puts a task back after an undone delete. Prefer the original id so links and
+// sorting stay stable, but fall back to a generated id when the column does not
+// accept explicit values.
+export async function restoreTask(task: Task): Promise<Task> {
+  const row: TaskInsert = {
+    title: task.title,
+    due_date: task.due_date,
+    due_time: task.due_time,
+    priority: task.priority as TaskInsert["priority"],
+    category_id: task.category_id,
+    tasklist_id: task.tasklist_id,
+    done: task.done,
+  };
+
+  let { data, error } = await supabase
+    .from("task")
+    .insert({ ...row, id: task.id })
+    .select("id")
+    .single();
+
+  if (error) {
+    ({ data, error } = await supabase
+      .from("task")
+      .insert(row)
+      .select("id")
+      .single());
+  }
+
+  if (error) throw error;
+  if (!data) throw new Error("No task row was restored.");
+
+  return { ...task, id: data.id };
 }
 
 export async function deleteTasks(taskIds: number[]): Promise<void> {

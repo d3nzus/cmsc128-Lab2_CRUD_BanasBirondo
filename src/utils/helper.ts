@@ -1,9 +1,5 @@
 import { Direction, NewTaskForm, SortKey, Task } from "../types/types.ts";
 
-function pendingDeleteStorageKey(userId: string) {
-  return `pending-task-deletes:${userId}`;
-}
-
 export const priorityOptions = [
   { value: "high", label: "High", score: 2 },
   { value: "mid", label: "Mid", score: 1 },
@@ -55,49 +51,6 @@ export function sortTasks(tasks: Task[], orderBy: SortKey, direction: Direction)
   });
 
   return sortedTasks;
-}
-
-export function readPendingDeleteIds(userId: string): number[] {
-  try {
-    const storedIds: unknown = JSON.parse(
-      sessionStorage.getItem(pendingDeleteStorageKey(userId)) ?? "[]",
-    );
-    return Array.isArray(storedIds)
-      ? storedIds.filter((id): id is number => Number.isInteger(id))
-      : [];
-  } catch {
-    return [];
-  }
-}
-
-function savePendingDeleteIds(userId: string, taskIds: number[]) {
-  sessionStorage.setItem(pendingDeleteStorageKey(userId), JSON.stringify(taskIds));
-}
-
-export function queuePendingDelete(
-  pendingIds: ReadonlySet<number>,
-  taskId: number,
-  userId: string,
-): Set<number> {
-  const nextPendingIds = new Set(pendingIds);
-  nextPendingIds.add(taskId);
-  savePendingDeleteIds(userId, [...nextPendingIds]);
-  return nextPendingIds;
-}
-
-export function undoPendingDelete(
-  pendingIds: ReadonlySet<number>,
-  taskId: number,
-  userId: string,
-): Set<number> {
-  const nextPendingIds = new Set(pendingIds);
-  nextPendingIds.delete(taskId);
-  savePendingDeleteIds(userId, [...nextPendingIds]);
-  return nextPendingIds;
-}
-
-export function clearPendingDeleteIds(userId: string) {
-  sessionStorage.removeItem(pendingDeleteStorageKey(userId));
 }
 
 export function getPriorityClass(priority: string | null) {
