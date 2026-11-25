@@ -67,3 +67,19 @@ export function getPriorityClass(priority: string | null) {
       return "";
   }
 }
+
+export function getPriorityOutlineClass(priority: string | null) {
+  const outlineShared = "border-2 bg-amber-50"
+  switch (priority?.toLowerCase()) {
+    case "high":
+      return `border-red-600 ${outlineShared} text-red-600`;
+    case "mid":
+    case "medium":
+      return `border-orange-500 ${outlineShared} text-orange-500`;
+    case "low":
+    case "lo":
+      return `border-yellow-300 ${outlineShared} text-yellow-300`;
+    default:
+      return `border-white ${outlineShared} text-black`;
+  }
+}

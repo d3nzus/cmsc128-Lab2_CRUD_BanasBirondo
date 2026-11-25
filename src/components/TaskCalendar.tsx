@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 import type { Task } from "../types/types.ts";
-import { getPriorityClass } from "../utils/helper.ts";
-
+import { getPriorityClass, getPriorityOutlineClass } from "../utils/helper.ts";
 type TaskCalendarProps = {
   tasks: Task[];
 };
@@ -114,9 +113,11 @@ function TaskCalendar({ tasks }: TaskCalendarProps) {
                 {dayTasks.slice(0, 2).map((task) => (
                   <span
                     key={task.id}
-                    className={`block truncate rounded-full px-1 pb-1 pt-1 text-xs ${getPriorityClass(task.priority) || "bg-white/70 text-cyan-950"} ${
-                      task.done ? "line-through opacity-60" : ""
-                    }`}
+                    className={`box-border block truncate rounded border px-1 text-xs ${
+                        isSelected
+                            ? `font-bold ${getPriorityOutlineClass(task.priority)}`
+                            : `border-transparent ${getPriorityClass(task.priority) || "bg-white/70 text-cyan-950"}`
+                    } ${task.done ? "line-through opacity-60" : ""}`}
                   >
                     {task.title}
                   </span>

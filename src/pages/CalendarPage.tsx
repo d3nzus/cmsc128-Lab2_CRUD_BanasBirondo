@@ -44,7 +44,7 @@ function CalendarPage() {
     <main className="mx-auto w-full max-w-5xl space-y-4 p-4 text-cyan-950">
       <Link
         to={invalidId ? "/home" : `/home?tasklist_id=${taskListId}`}
-        className="inline-block rounded-md bg-teal-100 px-3 py-2 font-semibold shadow-sm hover:bg-teal-200 focus:outline-2 focus:outline-offset-2 focus:outline-olive-leaf-600"
+        className="inline-block rounded-md bg-black-forest-500 text-white px-3 py-2 font-semibold shadow-sm shadow-teal-600/50 hover:bg-black-forest-700 focus:outline-2 focus:outline-offset-2 focus:outline-olive-leaf-600"
       >
         &larr; Back to task list
       </Link>
