@@ -5,6 +5,7 @@ import EditForm from "../pages/EditForm";
 import LoginPage from "../pages/LoginPage";
 import AddTaskList from "../pages/AddTaskList";
 import Profile from "../pages/Profile";
+import CalendarPage from "../pages/CalendarPage";
 import ResetPasswordPage from "../pages/ResetPasswordPage";
 import NotFound from "../pages/NotFound";
 import { createBrowserRouter, redirect } from "react-router-dom";
@@ -19,7 +20,6 @@ async function requireGuest() {
   const user = await getCurrentUser();
   return user ? redirect("/home") : null;
 }
-
 const router = createBrowserRouter([
     {
     element: <App/>,
@@ -66,6 +66,9 @@ const router = createBrowserRouter([
       {
         path: "*",
         element: <NotFound/>,
+      },{
+        path: "/calendar",
+        element: <CalendarPage/>,
       },
     ]
   }

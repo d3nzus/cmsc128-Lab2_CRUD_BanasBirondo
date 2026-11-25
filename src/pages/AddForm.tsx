@@ -11,7 +11,8 @@ function AddForm() {
   const taskListId = Number.isInteger(requestedTaskListId) && requestedTaskListId > 0
     ? requestedTaskListId
     : undefined;
-
+  const requestedDate = searchParams.get("date") ?? "";
+  const initialDate = /^\d{4}-\d{2}-\d{2}$/.test(requestedDate) ? requestedDate : "";
   async function handleSubmit(values: NewTaskForm) {
     await addTask(createTaskPayload(values), taskListId);
     navigate(taskListId ? `/home?tasklist_id=${taskListId}` : "/home");
@@ -19,11 +20,18 @@ function AddForm() {
 
   return (
     <TaskForm
-      heading="New Task"
-      submitLabel="Add Task"
-      savingLabel="Adding..."
-      onSubmit={handleSubmit}
-    />
+    heading="New Task"
+    submitLabel="Add Task"
+    savingLabel="Adding..."
+    initialValues={{
+      title: "",
+      date: initialDate,
+      time: "",
+      priority: "mid",
+      categoryId: "",
+    }}
+    onSubmit={handleSubmit}
+  />
   );
 }
 
