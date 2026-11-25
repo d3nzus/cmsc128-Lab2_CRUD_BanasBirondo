@@ -1,7 +1,7 @@
 import { supabase } from "../../supabase/supabase.ts";
 import type { createTaskPayload } from "./helper.ts";
 import { getCurrentUser } from "./userAuth.ts";
-import type { CategoryOption, Profile, Task } from "../types/types.ts";
+import type { CategoryOption, Task } from "../types/types.ts";
 
 export type UserTaskList = { id: number; name: string | null };
 export type EditableTask = Pick<
@@ -50,7 +50,13 @@ export async function getTasksForList(taskListId: number): Promise<Task[]> {
     done
   `).eq("tasklist_id", taskListId);
   if (error) throw error;
-  return data;
+
+  // The filter above guarantees a non-null tasklist_id, but the generated
+  // schema still types the column as nullable.
+  return data.map((task) => ({
+    ...task,
+    tasklist_id: task.tasklist_id ?? taskListId,
+  }));
 }
 
 export async function getCategories(): Promise<CategoryOption[]> {
@@ -64,6 +70,9 @@ export async function getCategories(): Promise<CategoryOption[]> {
 }
 
 export async function getTaskByID(taskId: string): Promise<EditableTask> {
+  const id = Number(taskId);
+  if (!Number.isInteger(id)) throw new Error("A valid task id is required.");
+
   const { data, error } = await supabase.from("task").select(`
     id,
     title,
@@ -72,7 +81,7 @@ export async function getTaskByID(taskId: string): Promise<EditableTask> {
     priority,
     category_id,
     done
-  `).eq("id", taskId).single();
+  `).eq("id", id).single();
 
   if (error) throw error;
   return data;
