@@ -207,7 +207,7 @@ function TaskList() {
           {selectedTaskListId && (
             <Link
               to={`/calendar?tasklist_id=${selectedTaskListId}`}
-              className="inline-flex h-full items-center rounded-xl bg-black-forest-500 px-4 py-2 font-bold text-white shadow-xl shadow-teal-600/50 hover:bg-black-forest-700 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex h-full items-center rounded-xl bg-black-forest-500 px-4 py-2 font-bold text-white shadow-sm shadow-teal-600/50 hover:bg-black-forest-700 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Calendar
             </Link>
