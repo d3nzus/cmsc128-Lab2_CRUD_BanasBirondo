@@ -52,7 +52,9 @@ function CalendarPage() {
       {invalidId && <p role="alert" className="text-red-800">No task list selected.</p>}
       {loading && <p role="status">Loading...</p>}
       {loadError && <p role="alert" className="text-red-800">{loadError}</p>}
-      {!invalidId && !loading && !loadError && <TaskCalendar tasks={tasks} />}
+      {!invalidId && !loading && !loadError && (
+        <TaskCalendar tasks={tasks} taskListId={taskListId} />
+      )}
     </main>
   );
 }

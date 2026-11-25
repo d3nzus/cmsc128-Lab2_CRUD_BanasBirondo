@@ -1,9 +1,12 @@
 import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import type { Task } from "../types/types.ts";
 import { getPriorityClass, getPriorityOutlineClass } from "../utils/helper.ts";
 type TaskCalendarProps = {
   tasks: Task[];
+  taskListId: number;
 };
+
 
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -11,7 +14,7 @@ function toDateKey(year: number, month: number, day: number) {
   return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 }
 
-function TaskCalendar({ tasks }: TaskCalendarProps) {
+function TaskCalendar({ tasks, taskListId }: TaskCalendarProps) {
   const today = new Date();
   const todayKey = toDateKey(today.getFullYear(), today.getMonth(), today.getDate());
 
@@ -132,7 +135,15 @@ function TaskCalendar({ tasks }: TaskCalendarProps) {
       <section className="rounded-md bg-teal-100 p-4 shadow-sm">
         <h3 className="mb-2 text-xl font-bold">{selectedKey}</h3>
         {selectedTasks.length === 0 ? (
-          <p>No tasks due on this day.</p>
+          <section>
+            <p>No tasks due on this day.</p>
+            <Link
+              className="flex w-fit items-center justify-start rounded-md bg-black-forest-500 px-2 py-1 text-sm font-semibold text-white hover:bg-black-forest-700"
+              to={`/addForm?tasklist_id=${encodeURIComponent(taskListId)}&date=${encodeURIComponent(selectedKey)}`}
+            >
+              Add Task
+            </Link>
+          </section>
         ) : (
           <ul className="space-y-2">
             {selectedTasks.map((task) => (
@@ -149,6 +160,14 @@ function TaskCalendar({ tasks }: TaskCalendarProps) {
                 )}
               </li>
             ))}
+            <li>
+            <Link
+              className="flex w-fit items-center justify-start rounded-md bg-black-forest-500 px-2 py-1 text-sm font-semibold text-white hover:bg-black-forest-700"
+              to={`/addForm?tasklist_id=${encodeURIComponent(taskListId)}&date=${encodeURIComponent(selectedKey)}`}
+            >
+              Add Task
+            </Link>
+          </li>
           </ul>
         )}
       </section>
