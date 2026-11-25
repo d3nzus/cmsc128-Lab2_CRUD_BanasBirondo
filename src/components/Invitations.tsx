@@ -15,7 +15,7 @@ function Invitations({ title = "Invitations", onAccepted }: InvitationsProps) {
   const [error, setError] = useState("");
 
   const cellClass = "p-3 sm:p-4";
-  const headerClass = "bg-olive-leaf-600 p-3 text-cyan-50 sm:p-4";
+  const headerClass = "bg-olive-leaf-700 p-3 text-cyan-50 sm:p-4";
 
   async function loadInvites() {
     try {
@@ -69,11 +69,12 @@ function Invitations({ title = "Invitations", onAccepted }: InvitationsProps) {
       {invites.length > 0 && (
         <div className="w-full max-w-full overflow-x-auto rounded-xl shadow-xl shadow-teal-600/50">
           <table className="w-full border-collapse text-cyan-950">
+            <caption className="sr-only">Pending invitations</caption>
             <thead>
               <tr>
-                <th className={`${headerClass} text-left`}>Task List</th>
-                <th className={`${headerClass} text-left`}>Invited By</th>
-                <th className={headerClass}>Actions</th>
+                <th className={`${headerClass} text-left`} scope="col">Task List</th>
+                <th className={`${headerClass} text-left`} scope="col">Invited By</th>
+                <th className={headerClass} scope="col">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -87,10 +88,11 @@ function Invitations({ title = "Invitations", onAccepted }: InvitationsProps) {
                   <td className={cellClass}>
                     <div className="flex gap-1">
                       <button
-                        className="w-full rounded bg-black-forest-500 px-2 py-2 font-bold text-white hover:bg-black-forest-700 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="w-full rounded bg-black-forest-700 px-2 py-2 font-bold text-white hover:bg-black-forest-900 disabled:cursor-not-allowed disabled:opacity-50"
                         type="button"
                         onClick={() => handleAccept(invite.id)}
                         disabled={busyId !== null}
+                        aria-label={`Accept invitation to ${invite.tasklist_name ?? "Untitled list"}`}
                       >
                         Accept
                       </button>
@@ -99,6 +101,7 @@ function Invitations({ title = "Invitations", onAccepted }: InvitationsProps) {
                         type="button"
                         onClick={() => handleDecline(invite.id)}
                         disabled={busyId !== null}
+                        aria-label={`Decline invitation to ${invite.tasklist_name ?? "Untitled list"}`}
                       >
                         Decline
                       </button>

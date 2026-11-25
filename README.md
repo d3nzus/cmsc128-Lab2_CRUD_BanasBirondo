@@ -45,7 +45,9 @@ Pivoted from PHP-MySQL to React.
    ```
 
    These can be found in the Supabase project under **Settings → API**.
-   
+
+   For password reset emails, add `http://localhost:5173/resetPassword` (and your deployed `/resetPassword` URL) under **Supabase → Authentication → URL Configuration → Redirect URLs**.
+
 4. **Run the development server**
 
    ```bash
@@ -64,6 +66,8 @@ The project can also be accessed using the [deployment](https://demonicduo128lab
 |---|---|
 | `category` | `id`, `name` |
 | `task` | `id`, `title`, `due_date`, `due_time`, `priority`, `done`, `category_id` (FK → `category.id`) |
+
+> `task.category_id` is required, so the `category` table must contain at least one row before tasks can be created. The app shows guidance when it is empty but does not manage categories.
 
 ## CRUD Operations
 

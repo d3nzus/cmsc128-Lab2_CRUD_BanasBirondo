@@ -25,7 +25,7 @@ function SignOutButton() {
   return (
     <div className="flex flex-col items-end gap-1">
       <button
-        className="rounded bg-copperwood-500 px-4 py-2 font-bold text-white hover:bg-copperwood-700 disabled:opacity-50"
+        className="rounded bg-copperwood-700 px-4 py-2 font-bold text-white hover:bg-copperwood-800 disabled:opacity-50"
         type="button"
         onClick={() => void handleSignOut()}
         disabled={signingOut}

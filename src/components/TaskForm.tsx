@@ -29,6 +29,8 @@ function TaskForm({
 }: TaskFormProps) {
   const [values, setValues] = useState(initialValues);
   const [categories, setCategories] = useState<CategoryOption[]>([]);
+  const [categoriesLoaded, setCategoriesLoaded] = useState(false);
+  const [categoryError, setCategoryError] = useState("");
   const [saving, setSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -40,13 +42,20 @@ function TaskForm({
       })
       .catch((error: unknown) => {
         if (!cancelled) {
-          setErrorMessage(error instanceof Error ? error.message : String(error));
+          setCategoryError(error instanceof Error ? error.message : String(error));
         }
+      })
+      .finally(() => {
+        if (!cancelled) setCategoriesLoaded(true);
       });
     return () => {
       cancelled = true;
     };
   }, []);
+
+  const noCategories = categoriesLoaded && !categoryError && categories.length === 0;
+  const categoriesLoading = !categoriesLoaded;
+  const categoriesUnavailable = Boolean(categoryError) || noCategories;
 
   function updateValue(field: keyof NewTaskForm, value: string) {
     setValues((current) => ({ ...current, [field]: value }));
@@ -124,7 +133,7 @@ function TaskForm({
                 {priorityOptions.map((option) => (
                   <label
                     key={option.value}
-                    className={`flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2.5 text-sm ${values.priority === option.value ? "border-cornsilk-300 bg-olive-leaf-600" : "border-olive-leaf-300 bg-olive-leaf-800 hover:bg-olive-leaf-900"}`}
+                    className={`flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2.5 text-sm ${values.priority === option.value ? "border-cornsilk-300 bg-olive-leaf-700" : "border-olive-leaf-300 bg-olive-leaf-800 hover:bg-olive-leaf-900"}`}
                   >
                     <input
                       className="accent-cornsilk-300"
@@ -149,13 +158,28 @@ function TaskForm({
                 id="task-category"
                 value={values.categoryId}
                 onChange={(event) => updateValue("categoryId", event.target.value)}
+                aria-describedby={categoriesUnavailable ? "category-help" : undefined}
+                disabled={saving || categoriesLoading || categoriesUnavailable}
                 required
               >
-                <option value="" disabled>Select a category</option>
+                <option value="" disabled>
+                  {categoriesLoading
+                    ? "Loading categories..."
+                    : categoriesUnavailable
+                      ? "No categories available"
+                      : "Select a category"}
+                </option>
                 {categories.map((category) => (
                   <option key={category.id} value={category.id}>{category.name}</option>
                 ))}
               </select>
+              {categoriesUnavailable && (
+                <p id="category-help" className="mt-1 text-sm text-red-100" role="alert">
+                  {categoryError
+                    ? `Could not load categories: ${categoryError}. Reload the page to try again.`
+                    : "No categories exist yet, so a task cannot be saved. Add a category in Supabase and reload the page."}
+                </p>
+              )}
             </div>
           </div>
 
@@ -169,9 +193,9 @@ function TaskForm({
               Cancel
             </Link>
             <button
-              className="inline-flex min-h-11 items-center justify-center rounded-md bg-black-forest-500 px-5 py-2 font-bold text-white hover:bg-black-forest-600 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex min-h-11 items-center justify-center rounded-md bg-black-forest-700 px-5 py-2 font-bold text-white hover:bg-black-forest-900 disabled:cursor-not-allowed disabled:opacity-50"
               type="submit"
-              disabled={saving}
+              disabled={saving || categoriesLoading || categoriesUnavailable}
             >
               {saving ? savingLabel : submitLabel}
             </button>
