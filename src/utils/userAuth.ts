@@ -55,3 +55,23 @@ export async function signOut() {
   const { error } = await supabase.auth.signOut();
   return error?.message ?? null;
 }
+
+export async function requestPasswordReset(email: string) {
+  try {
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+      redirectTo: `${window.location.origin}/resetPassword`,
+    });
+    return error?.message ?? null;
+  } catch (error) {
+    return error instanceof Error ? error.message : "Unable to send the reset email.";
+  }
+}
+
+export async function updatePassword(password: string) {
+  try {
+    const { error } = await supabase.auth.updateUser({ password });
+    return error?.message ?? null;
+  } catch (error) {
+    return error instanceof Error ? error.message : "Unable to update the password.";
+  }
+}

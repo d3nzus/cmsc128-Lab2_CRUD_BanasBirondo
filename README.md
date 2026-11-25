@@ -45,7 +45,9 @@ Pivoted from PHP-MySQL to React.
    ```
 
    These can be found in the Supabase project under **Settings → API**.
-   
+
+   For password reset emails, add `http://localhost:5173/resetPassword` (and your deployed `/resetPassword` URL) under **Supabase → Authentication → URL Configuration → Redirect URLs**.
+
 4. **Run the development server**
 
    ```bash
