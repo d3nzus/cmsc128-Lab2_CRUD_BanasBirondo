@@ -2,6 +2,8 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import type { Direction, SortKey, Task } from "../types/types.ts";
 import { getPriorityClass, sortTasks } from "../utils/helper.ts";
+import TaskCard from "./TaskCard.tsx";
+import TaskStatusButton from "./TaskStatusButton.tsx";
 
 type TaskTableProps = {
   tasks: Task[];
@@ -22,7 +24,7 @@ function TaskTable({ tasks, deletingId, onDelete, onToggleDone }: TaskTableProps
       <form className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-lg bg-olive-leaf-700 p-3 text-cyan-50 shadow-xl shadow-teal-600/50 sm:p-4">
         <label htmlFor="order">Order By:</label>
         <select
-          className="min-w-0 rounded-md border-0 bg-cornsilk-300 px-2 py-1.5 text-cyan-950"
+          className="min-h-11 min-w-0 rounded-md border-0 bg-cornsilk-300 px-2 py-1.5 text-cyan-950"
           id="order"
           value={orderBy}
           onChange={(event) => setOrderBy(event.target.value as SortKey)}
@@ -36,7 +38,7 @@ function TaskTable({ tasks, deletingId, onDelete, onToggleDone }: TaskTableProps
         </select>
         <label htmlFor="sort-direction">Order:</label>
         <select
-          className="min-w-0 rounded-md border-0 bg-cornsilk-300 px-2 py-1.5 text-cyan-950"
+          className="min-h-11 min-w-0 rounded-md border-0 bg-cornsilk-300 px-2 py-1.5 text-cyan-950"
           id="sort-direction"
           value={direction}
           onChange={(event) => setDirection(event.target.value as Direction)}
@@ -46,7 +48,7 @@ function TaskTable({ tasks, deletingId, onDelete, onToggleDone }: TaskTableProps
         </select>
       </form>
 
-      <div className="w-full max-w-full overflow-x-auto rounded-xl shadow-xl shadow-teal-600/50">
+      <div className="hidden w-full max-w-full overflow-x-auto rounded-xl shadow-xl shadow-teal-600/50 md:block">
         <table className="w-full min-w-[900px] border-collapse text-cyan-950">
           <caption className="sr-only">Tasks in the selected task list</caption>
           <thead>
@@ -69,17 +71,9 @@ function TaskTable({ tasks, deletingId, onDelete, onToggleDone }: TaskTableProps
                   className="bg-sunlit-clay-200 inset-shadow-sm/30 inset-shadow-sunlit-clay-400"
                 >
                   <td className="p-4 text-center align-middle">
-                    <button
-                      className={`w-32 rounded px-2 py-2 font-bold ${task.done ? "bg-green-800 text-white hover:bg-green-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-900" : "border border-olive-leaf-700 bg-transparent text-olive-leaf-900 hover:bg-olive-leaf-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-olive-leaf-700"}`}
-                      type="button"
-                      onClick={() => onToggleDone(task)}
-                      aria-pressed={task.done}
-                      aria-label={`${task.done ? "Done" : "Not Done"}: ${task.title}`}
-                    >
-                      {task.done ? "Done" : "Not Done"}
-                    </button>
+                    <TaskStatusButton task={task} onToggle={onToggleDone} className="w-32" />
                   </td>
-                  <td className={cellClass}>{task.title}</td>
+                  <td className={`${cellClass} break-words`}>{task.title}</td>
                   <td className={cellClass}>{task.due_date}</td>
                   <td className={cellClass}>{task.due_time}</td>
                   <td className={cellClass}>
@@ -91,7 +85,7 @@ function TaskTable({ tasks, deletingId, onDelete, onToggleDone }: TaskTableProps
                   <td className={cellClass}>
                     <div className="flex gap-1">
                       <button
-                        className="w-full rounded bg-red-700 px-2 py-2 font-bold text-white hover:bg-red-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-800 disabled:cursor-not-allowed disabled:opacity-60"
+                        className="min-h-11 w-full rounded bg-red-700 px-2 py-2 font-bold text-white hover:bg-red-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-800 disabled:cursor-not-allowed disabled:opacity-60"
                         type="button"
                         onClick={() => onDelete(task)}
                         disabled={deleting}
@@ -101,7 +95,7 @@ function TaskTable({ tasks, deletingId, onDelete, onToggleDone }: TaskTableProps
                         {deleting ? "Deleting..." : "Delete"}
                       </button>
                       <Link
-                        className="inline-flex w-full justify-center rounded bg-olive-leaf-950 px-2 py-2 font-bold text-cornsilk-50 hover:bg-olive-leaf-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-olive-leaf-700"
+                        className="inline-flex min-h-11 w-full justify-center rounded bg-olive-leaf-950 px-2 py-2 font-bold text-cornsilk-50 hover:bg-olive-leaf-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-olive-leaf-700"
                         to={`/editForm?task_id=${task.id}&tasklist_id=${task.tasklist_id}`}
                         aria-label={`Edit ${task.title}`}
                       >
@@ -115,6 +109,18 @@ function TaskTable({ tasks, deletingId, onDelete, onToggleDone }: TaskTableProps
           </tbody>
         </table>
       </div>
+
+      <ul className="flex flex-col gap-3 md:hidden">
+        {sortedTasks.map((task) => (
+          <TaskCard
+            key={task.id}
+            task={task}
+            deleting={deletingId === task.id}
+            onDelete={onDelete}
+            onToggleDone={onToggleDone}
+          />
+        ))}
+      </ul>
     </>
   );
 }

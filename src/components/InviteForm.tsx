@@ -31,7 +31,7 @@ function InviteForm({ taskListId }: { taskListId: number | null }) {
     >
       <label htmlFor="invite-email">Invite someone to this list using their email:</label>
       <input
-        className="min-w-0 rounded-md border-0 bg-cornsilk-300 px-2 py-1.5 text-cyan-950"
+        className="min-h-11 min-w-0 rounded-md border-0 bg-cornsilk-300 px-2 py-1.5 text-cyan-950"
         id="invite-email"
         type="email"
         autoComplete="off"
@@ -40,7 +40,7 @@ function InviteForm({ taskListId }: { taskListId: number | null }) {
         required
       />
       <button
-        className="rounded bg-cornsilk-300 px-4 py-2 font-bold text-olive-leaf-950 hover:bg-cornsilk-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cornsilk-300 disabled:cursor-not-allowed disabled:opacity-50"
+        className="inline-flex min-h-11 items-center justify-center rounded bg-cornsilk-300 px-4 py-2 font-bold text-olive-leaf-950 hover:bg-cornsilk-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cornsilk-300 disabled:cursor-not-allowed disabled:opacity-50"
         type="submit"
         disabled={sending || taskListId === null}
       >

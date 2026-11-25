@@ -205,7 +205,7 @@ function LoginPage() {
             </p>
           )}
 
-          <div className="flex flex-col-reverse gap-3 border-t border-olive-leaf-500 pt-5 sm:flex-row sm:justify-between">
+          <div className="flex flex-col gap-3 border-t border-olive-leaf-500 pt-5 sm:flex-row sm:justify-between">
           <button
             className="inline-flex min-h-11 items-center justify-center rounded-md bg-cornsilk-300 px-5 py-2 font-bold text-olive-leaf-950 hover:bg-cornsilk-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cornsilk-300 disabled:cursor-not-allowed disabled:opacity-50"
             type="submit"

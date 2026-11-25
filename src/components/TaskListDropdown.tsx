@@ -16,7 +16,7 @@ function TaskListDropdown({
     <div className="mb-5 flex flex-wrap items-center gap-3">
       {taskLists.length > 0 && (
         <select
-          className="w-fit max-w-full rounded-md border border-olive-leaf-700 bg-white px-3 py-2 text-2xl font-bold text-cyan-950 shadow-sm focus:outline-2 focus:outline-offset-2 focus:outline-olive-leaf-700 sm:text-3xl"
+          className="min-h-11 w-fit max-w-full rounded-md border border-olive-leaf-700 bg-white px-3 py-2 text-xl font-bold text-cyan-950 shadow-sm focus:outline-2 focus:outline-offset-2 focus:outline-olive-leaf-700 sm:text-3xl"
           id="tasklist-select"
           aria-label="Task list"
           value={selectedTaskListId ?? ""}

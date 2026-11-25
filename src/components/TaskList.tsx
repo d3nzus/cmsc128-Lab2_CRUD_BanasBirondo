@@ -51,7 +51,7 @@ function TaskToast({
       <div className="flex shrink-0 items-center gap-2">
         {toast.kind === "undo" && (
           <button
-            className="rounded-md bg-cornsilk-300 px-3 py-1.5 text-sm font-bold text-olive-leaf-950 hover:bg-cornsilk-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cornsilk-100"
+            className="inline-flex min-h-11 items-center justify-center rounded-md bg-cornsilk-300 px-3 py-1.5 text-sm font-bold text-olive-leaf-950 hover:bg-cornsilk-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cornsilk-100"
             type="button"
             onClick={() => onUndo(toast.task)}
             aria-label={`Undo delete of ${toast.task.title}`}
@@ -60,7 +60,7 @@ function TaskToast({
           </button>
         )}
         <button
-          className="rounded-md px-2 py-1.5 text-sm font-semibold text-cornsilk-200 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cornsilk-100"
+          className="inline-flex min-h-11 items-center justify-center rounded-md px-2 py-1.5 text-sm font-semibold text-cornsilk-200 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cornsilk-100"
           type="button"
           onClick={onDismiss}
         >
